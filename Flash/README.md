@@ -11,7 +11,7 @@
 | `OpenOCD_flash.sh` | OpenOCD 烧录脚本（Linux） |
 | `OpenOCD_flash.bat` | OpenOCD 烧录脚本（Windows） |
 | `daplink.cfg` | OpenOCD 配置文件（CMSIS-DAP + SWD） |
-| `MSPM0G350X.svd` | 外设寄存器描述文件（调试用） |
+| `MSPM0G351X.svd` | 外设寄存器描述文件（调试用） |
 
 ## 前置条件
 

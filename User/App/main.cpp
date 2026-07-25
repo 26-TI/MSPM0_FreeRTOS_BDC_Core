@@ -32,16 +32,15 @@
 int main(void) 
 {
   /* ---- 硬件初始化 ---- */
-  SYSCFG_DL_init(); /* SysConfig 自动生成: 时钟 / GPIO / 外设 */
-  bsp_init();       /* BSP 驱动对象绑定到硬件实例 */
+  SYSCFG_DL_init();      /* SysConfig 自动生成: 时钟 / GPIO / 外设 */
+  bsp_init();            /* BSP 驱动对象绑定到硬件实例 */
   // device_init();     /* 设备层初始化（按需启用） */
 
   /* ---- 创建 FreeRTOS 任务 ---- */
 
   // /* GPIO / 按键 — 必开 */
-  xTaskCreate(gpio_test_task, "gpio", 0x100, NULL, configMAX_PRIORITIES - 3, NULL);
-  // xTaskCreate(relay_test_task, "relay", 0x100, NULL, configMAX_PRIORITIES -
-  // 3, NULL);
+  xTaskCreate(gpio_test_task, "gpio", 0x100, NULL, configMAX_PRIORITIES - 3,
+              NULL);
 
   /* CAN 电机协议测试 — 回环模式，无需外部硬件 */
   // xTaskCreate(motor_proto_test_task, "motor_proto", 0x200, NULL,
@@ -50,7 +49,8 @@ int main(void)
   /* CAN 总线 — 按需开关 */
   // xTaskCreate(can_send_test_task, "can_send", 0x200, NULL,
   // configMAX_PRIORITIES - 2, NULL);
-  // xTaskCreate(can_recv_isr_test_task, "can_recv", 0x200, NULL, configMAX_PRIORITIES - 2, NULL);
+  // xTaskCreate(can_recv_isr_test_task, "can_recv", 0x200, NULL,
+  // configMAX_PRIORITIES - 2, NULL);
 
   // /* 串口协议 — 独占 UART2 */
   // xTaskCreate(proto_send_test_task, "proto_send", 0x100, NULL,
@@ -73,6 +73,7 @@ int main(void)
   vTaskStartScheduler();
 
   /* 理论上不会执行到这里 */
-  while (1) {
+  while (1) 
+  {
   }
 }

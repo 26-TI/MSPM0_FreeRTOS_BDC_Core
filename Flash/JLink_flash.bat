@@ -36,7 +36,7 @@ set "TEMP_SCRIPT=temp_jlink_script.jlink"
 echo device MSPM0G3519
 echo if SWD
 echo speed 4000
-echo r
+echo halt
 echo loadfile !ELF_FILE!
 echo r
 echo go

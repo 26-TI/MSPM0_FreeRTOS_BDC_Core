@@ -76,12 +76,12 @@ AlwaysBreakTemplateDeclarations: true
 # # 函数调用时，参数的放置规则
 # -- false - 参数要么放在同一行，要么每个参数占用一行
 # -- true - 不做强制要求
-BinPackArguments: true
+BinPackArguments: false
 
 # 函数声明、定义时，参数的放置规则
 # -- false - 参数要么放在同一行，要么每个参数占用一行
 # -- true - 不做强制要求
-BinPackParameters: true
+BinPackParameters: false
 
 # 大括号放置风格
 # -- Attach - 大括号紧随前方内容，放在同一行

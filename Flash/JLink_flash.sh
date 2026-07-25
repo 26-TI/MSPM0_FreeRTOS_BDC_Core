@@ -40,7 +40,7 @@ cat > "$TEMP_SCRIPT" <<EOF
 device MSPM0G3519
 if SWD
 speed 4000
-r
+halt
 loadfile $ELF_FILE
 r
 go

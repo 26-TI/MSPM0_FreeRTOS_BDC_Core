@@ -73,7 +73,7 @@ const pinFunction4        = system.clockTree["HFXT"];
 pinFunction4.enable       = true;
 pinFunction4.HFCLKMonitor = true;
 pinFunction4.inputFreq    = 16;
-pinFunction4.HFXTStartup  = 100;
+pinFunction4.HFXTStartup  = 255;
 
 Board.peripheral.$assign          = "DEBUGSS";
 Board.peripheral.swclkPin.$assign = "PA20";
