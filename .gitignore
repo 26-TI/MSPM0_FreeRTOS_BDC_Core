@@ -1,0 +1,64 @@
+# =============================================
+#  MSPM0 FreeRTOS Project - .gitignore
+# =============================================
+
+# --- 编译中间文件 ---
+*.d
+*.o
+*.ko
+*.obj
+*.elf
+
+# --- 链接输出 ---
+*.ilk
+*.map
+*.exp
+
+# --- 预编译头 ---
+*.gch
+*.pch
+
+# --- 静态库/动态库 ---
+*.lib
+*.a
+*.la
+*.lo
+
+# Shared objects (inc. Windows DLLs)
+*.dll
+*.so
+*.so.*
+*.dylib
+
+# --- 可执行文件 ---
+*.exe
+*.out
+*.app
+*.i*86
+*.x86_64
+*.hex
+
+# --- 调试文件 ---
+*.dSYM/
+*.su
+*.idb
+*.pdb
+
+# --- 内核模块编译产物 ---
+*.mod*
+.cmd
+.tmp_versions/
+modules.order
+Module.symvers
+Mkfile.old
+dkms.conf
+
+# --- CMake 构建输出 ---
+build/
+.cache/
+
+example/
+
+mspm0g350x_base.cmake
+CMakePresets.json
+compile_commands.json

@@ -1,0 +1,39 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "cwd": "${workspaceRoot}",
+      "type": "cortex-debug",
+      "request": "launch",
+      "name": "cmsis-dap-debug",
+      "servertype": "openocd",
+      // 这个是根据主文件名 作为名字 ${workspaceFolderBasename}
+      "executable": "build/${workspaceFolderBasename}.elf",
+      "runToEntryPoint": "main",
+      "configFiles": [
+        "${workspaceRoot}/Flash/daplink.cfg"
+      ],
+      "liveWatch": {
+        "enabled": true,
+        "samplesPerSecond": 20
+      }
+    },
+    {
+      "cwd": "${workspaceRoot}",
+      "type": "cortex-debug",
+      "request": "launch",
+      "name": "jlink-debug",
+      "servertype": "jlink",
+      "interface": "swd", 
+      // 这个是根据主文件名 作为名字 ${workspaceFolderBasename}
+      "executable": "build/${workspaceFolderBasename}.elf",
+      "runToEntryPoint": "main",
+      "device": "MSPM0G3519",
+      "svdFile": "Flash/MSPM0G351X.svd",
+      "liveWatch": {
+        "enabled": true,
+        "samplesPerSecond": 20,
+      },
+    }
+  ]
+}
