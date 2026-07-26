@@ -47,22 +47,17 @@ public:
     uint16_t encoder_lines;     ///< 编码器线数
     float    gear_ratio;        ///< 减速比
     uint16_t control_period_ms; ///< 控制周期 (ms)
-    uint32_t pwm_max;           ///< PWM 最大占空比
   };
 
   struct State
   {
     float    current_speed_rpm; ///< 当前转速 (RPM)
-    uint32_t pwm_a, pwm_b;      ///< 当前 PWM 占空比
-    int32_t  total_pulses;      ///< 累计脉冲数
-    bool     is_forward;        ///< 是否正转
+    uint16_t pwm_a, pwm_b;      ///< 当前 PWM 占空比
   };
 
   Motor();
 
   bool init(const Config &cfg);
-
-  void set_duty(uint32_t ch_a, uint32_t ch_b);
   void update();
   void stop();
 
@@ -71,13 +66,14 @@ public:
   const State &get_state() const { return _state; }
 
 private:
-  float _pulses_to_rpm(int16_t delta) const;
-  void  _output_pwm(uint32_t a, uint32_t b);
 
   Config   _cfg{};
   State    _state{};
   float    _pulses_per_rev; ///< 每转脉冲数 = encoder_lines * 4 * gear_ratio
+  uint16_t _last_count;
+  bool     _enabled;
   uint32_t _duty_a, _duty_b;
+
 };
 
 #endif
