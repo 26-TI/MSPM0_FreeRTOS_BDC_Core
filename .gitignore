@@ -59,6 +59,6 @@ build/
 
 example/
 
-mspm0g350x_base.cmake
+mspm0g351x_base.cmake
 CMakePresets.json
 compile_commands.json
