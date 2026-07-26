@@ -838,11 +838,11 @@ static const DL_MCAN_BitTimingParams   gMCAN0BitTimes = {
     /* Arbitration Baud Rate Pre-scaler. */
     .nomRatePrescalar   = 0,
     /* Arbitration Time segment before sample point. */
-    .nomTimeSeg1        = 62,
+    .nomTimeSeg1        = 58,
     /* Arbitration Time segment after sample point. */
-    .nomTimeSeg2        = 15,
+    .nomTimeSeg2        = 19,
     /* Arbitration (Re)Synchronization Jump Width Range. */
-    .nomSynchJumpWidth  = 15,
+    .nomSynchJumpWidth  = 19,
     /* Data Baud Rate Pre-scaler. */
     .dataRatePrescalar  = 0,
     /* Data Time segment before sample point. */
