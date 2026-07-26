@@ -40,7 +40,7 @@
 
 #include "ti_msp_dl_config.h"
 
-DL_TimerA_backupConfig gPWMA0_1Backup;
+DL_TimerA_backupConfig gPWMA0Backup;
 DL_TimerG_backupConfig gQEI1Backup;
 DL_UART_Main_backupConfig gUART3Backup;
 DL_MCAN_backupConfig gMCAN0Backup;
@@ -55,7 +55,7 @@ SYSCONFIG_WEAK void SYSCFG_DL_init(void)
     SYSCFG_DL_GPIO_init();
     /* Module-Specific Initializations*/
     SYSCFG_DL_SYSCTL_init();
-    SYSCFG_DL_PWMA0_1_init();
+    SYSCFG_DL_PWMA0_init();
     SYSCFG_DL_QEI0_init();
     SYSCFG_DL_QEI1_init();
     SYSCFG_DL_I2C1_init();
@@ -67,7 +67,7 @@ SYSCONFIG_WEAK void SYSCFG_DL_init(void)
     SYSCFG_DL_DMA_init();
     SYSCFG_DL_MCAN0_init();
     /* Ensure backup structures have no valid state */
-	gPWMA0_1Backup.backupRdy 	= false;
+	gPWMA0Backup.backupRdy 	= false;
 	gQEI1Backup.backupRdy 	= false;
 	gUART3Backup.backupRdy 	= false;
 	gMCAN0Backup.backupRdy 	= false;
@@ -81,7 +81,7 @@ SYSCONFIG_WEAK bool SYSCFG_DL_saveConfiguration(void)
 {
     bool retStatus = true;
 
-	retStatus &= DL_TimerA_saveConfiguration(PWMA0_1_INST, &gPWMA0_1Backup);
+	retStatus &= DL_TimerA_saveConfiguration(PWMA0_INST, &gPWMA0Backup);
 	retStatus &= DL_TimerG_saveConfiguration(QEI1_INST, &gQEI1Backup);
 	retStatus &= DL_UART_Main_saveConfiguration(UART3_INST, &gUART3Backup);
 	retStatus &= DL_MCAN_saveConfiguration(MCAN0_INST, &gMCAN0Backup);
@@ -94,7 +94,7 @@ SYSCONFIG_WEAK bool SYSCFG_DL_restoreConfiguration(void)
 {
     bool retStatus = true;
 
-	retStatus &= DL_TimerA_restoreConfiguration(PWMA0_1_INST, &gPWMA0_1Backup, false);
+	retStatus &= DL_TimerA_restoreConfiguration(PWMA0_INST, &gPWMA0Backup, false);
 	retStatus &= DL_TimerG_restoreConfiguration(QEI1_INST, &gQEI1Backup, false);
 	retStatus &= DL_UART_Main_restoreConfiguration(UART3_INST, &gUART3Backup);
 	retStatus &= DL_MCAN_restoreConfiguration(MCAN0_INST, &gMCAN0Backup);
@@ -106,7 +106,7 @@ SYSCONFIG_WEAK void SYSCFG_DL_initPower(void)
 {
     DL_GPIO_reset(GPIOA);
     DL_GPIO_reset(GPIOB);
-    DL_TimerA_reset(PWMA0_1_INST);
+    DL_TimerA_reset(PWMA0_INST);
     DL_TimerG_reset(QEI0_INST);
     DL_TimerG_reset(QEI1_INST);
     DL_I2C_reset(I2C1_INST);
@@ -120,7 +120,7 @@ SYSCONFIG_WEAK void SYSCFG_DL_initPower(void)
 
     DL_GPIO_enablePower(GPIOA);
     DL_GPIO_enablePower(GPIOB);
-    DL_TimerA_enablePower(PWMA0_1_INST);
+    DL_TimerA_enablePower(PWMA0_INST);
     DL_TimerG_enablePower(QEI0_INST);
     DL_TimerG_enablePower(QEI1_INST);
     DL_I2C_enablePower(I2C1_INST);
@@ -140,14 +140,14 @@ SYSCONFIG_WEAK void SYSCFG_DL_GPIO_init(void)
     DL_GPIO_initPeripheralAnalogFunction(GPIO_HFXIN_IOMUX);
     DL_GPIO_initPeripheralAnalogFunction(GPIO_HFXOUT_IOMUX);
 
-    DL_GPIO_initPeripheralOutputFunction(GPIO_PWMA0_1_C0_IOMUX,GPIO_PWMA0_1_C0_IOMUX_FUNC);
-    DL_GPIO_enableOutput(GPIO_PWMA0_1_C0_PORT, GPIO_PWMA0_1_C0_PIN);
-    DL_GPIO_initPeripheralOutputFunction(GPIO_PWMA0_1_C1_IOMUX,GPIO_PWMA0_1_C1_IOMUX_FUNC);
-    DL_GPIO_enableOutput(GPIO_PWMA0_1_C1_PORT, GPIO_PWMA0_1_C1_PIN);
-    DL_GPIO_initPeripheralOutputFunction(GPIO_PWMA0_1_C2_IOMUX,GPIO_PWMA0_1_C2_IOMUX_FUNC);
-    DL_GPIO_enableOutput(GPIO_PWMA0_1_C2_PORT, GPIO_PWMA0_1_C2_PIN);
-    DL_GPIO_initPeripheralOutputFunction(GPIO_PWMA0_1_C3_IOMUX,GPIO_PWMA0_1_C3_IOMUX_FUNC);
-    DL_GPIO_enableOutput(GPIO_PWMA0_1_C3_PORT, GPIO_PWMA0_1_C3_PIN);
+    DL_GPIO_initPeripheralOutputFunction(GPIO_PWMA0_C0_IOMUX,GPIO_PWMA0_C0_IOMUX_FUNC);
+    DL_GPIO_enableOutput(GPIO_PWMA0_C0_PORT, GPIO_PWMA0_C0_PIN);
+    DL_GPIO_initPeripheralOutputFunction(GPIO_PWMA0_C1_IOMUX,GPIO_PWMA0_C1_IOMUX_FUNC);
+    DL_GPIO_enableOutput(GPIO_PWMA0_C1_PORT, GPIO_PWMA0_C1_PIN);
+    DL_GPIO_initPeripheralOutputFunction(GPIO_PWMA0_C2_IOMUX,GPIO_PWMA0_C2_IOMUX_FUNC);
+    DL_GPIO_enableOutput(GPIO_PWMA0_C2_PORT, GPIO_PWMA0_C2_PIN);
+    DL_GPIO_initPeripheralOutputFunction(GPIO_PWMA0_C3_IOMUX,GPIO_PWMA0_C3_IOMUX_FUNC);
+    DL_GPIO_enableOutput(GPIO_PWMA0_C3_PORT, GPIO_PWMA0_C3_PIN);
 
     DL_GPIO_initPeripheralInputFunction(GPIO_QEI0_PHA_IOMUX,GPIO_QEI0_PHA_IOMUX_FUNC);
     DL_GPIO_initPeripheralInputFunction(GPIO_QEI0_PHB_IOMUX,GPIO_QEI0_PHB_IOMUX_FUNC);
@@ -349,63 +349,63 @@ SYSCONFIG_WEAK void SYSCFG_DL_SYSCTL_init(void)
  * timerClkFreq = (timerClkSrc / (timerClkDivRatio * (timerClkPrescale + 1)))
  *   80000000 Hz = 80000000 Hz / (1 * (0 + 1))
  */
-static const DL_TimerA_ClockConfig gPWMA0_1ClockConfig = {
+static const DL_TimerA_ClockConfig gPWMA0ClockConfig = {
     .clockSel = DL_TIMER_CLOCK_BUSCLK,
     .divideRatio = DL_TIMER_CLOCK_DIVIDE_1,
     .prescale = 0U
 };
 
-static const DL_TimerA_PWMConfig gPWMA0_1Config = {
+static const DL_TimerA_PWMConfig gPWMA0Config = {
     .pwmMode = DL_TIMER_PWM_MODE_EDGE_ALIGN,
-    .period = 2000,
+    .period = 5000,
     .isTimerWithFourCC = true,
     .startTimer = DL_TIMER_START,
 };
 
-SYSCONFIG_WEAK void SYSCFG_DL_PWMA0_1_init(void) {
+SYSCONFIG_WEAK void SYSCFG_DL_PWMA0_init(void) {
 
     DL_TimerA_setClockConfig(
-        PWMA0_1_INST, (DL_TimerA_ClockConfig *) &gPWMA0_1ClockConfig);
+        PWMA0_INST, (DL_TimerA_ClockConfig *) &gPWMA0ClockConfig);
 
     DL_TimerA_initPWMMode(
-        PWMA0_1_INST, (DL_TimerA_PWMConfig *) &gPWMA0_1Config);
+        PWMA0_INST, (DL_TimerA_PWMConfig *) &gPWMA0Config);
 
     // Set Counter control to the smallest CC index being used
-    DL_TimerA_setCounterControl(PWMA0_1_INST,DL_TIMER_CZC_CCCTL0_ZCOND,DL_TIMER_CAC_CCCTL0_ACOND,DL_TIMER_CLC_CCCTL0_LCOND);
+    DL_TimerA_setCounterControl(PWMA0_INST,DL_TIMER_CZC_CCCTL0_ZCOND,DL_TIMER_CAC_CCCTL0_ACOND,DL_TIMER_CLC_CCCTL0_LCOND);
 
-    DL_TimerA_setCaptureCompareOutCtl(PWMA0_1_INST, DL_TIMER_CC_OCTL_INIT_VAL_LOW,
+    DL_TimerA_setCaptureCompareOutCtl(PWMA0_INST, DL_TIMER_CC_OCTL_INIT_VAL_LOW,
 		DL_TIMER_CC_OCTL_INV_OUT_DISABLED, DL_TIMER_CC_OCTL_SRC_FUNCVAL,
 		DL_TIMERA_CAPTURE_COMPARE_0_INDEX);
 
-    DL_TimerA_setCaptCompUpdateMethod(PWMA0_1_INST, DL_TIMER_CC_UPDATE_METHOD_IMMEDIATE, DL_TIMERA_CAPTURE_COMPARE_0_INDEX);
-    DL_TimerA_setCaptureCompareValue(PWMA0_1_INST, 2000, DL_TIMER_CC_0_INDEX);
+    DL_TimerA_setCaptCompUpdateMethod(PWMA0_INST, DL_TIMER_CC_UPDATE_METHOD_IMMEDIATE, DL_TIMERA_CAPTURE_COMPARE_0_INDEX);
+    DL_TimerA_setCaptureCompareValue(PWMA0_INST, 5000, DL_TIMER_CC_0_INDEX);
 
-    DL_TimerA_setCaptureCompareOutCtl(PWMA0_1_INST, DL_TIMER_CC_OCTL_INIT_VAL_LOW,
+    DL_TimerA_setCaptureCompareOutCtl(PWMA0_INST, DL_TIMER_CC_OCTL_INIT_VAL_LOW,
 		DL_TIMER_CC_OCTL_INV_OUT_DISABLED, DL_TIMER_CC_OCTL_SRC_FUNCVAL,
 		DL_TIMERA_CAPTURE_COMPARE_1_INDEX);
 
-    DL_TimerA_setCaptCompUpdateMethod(PWMA0_1_INST, DL_TIMER_CC_UPDATE_METHOD_IMMEDIATE, DL_TIMERA_CAPTURE_COMPARE_1_INDEX);
-    DL_TimerA_setCaptureCompareValue(PWMA0_1_INST, 2000, DL_TIMER_CC_1_INDEX);
+    DL_TimerA_setCaptCompUpdateMethod(PWMA0_INST, DL_TIMER_CC_UPDATE_METHOD_IMMEDIATE, DL_TIMERA_CAPTURE_COMPARE_1_INDEX);
+    DL_TimerA_setCaptureCompareValue(PWMA0_INST, 5000, DL_TIMER_CC_1_INDEX);
 
-    DL_TimerA_setCaptureCompareOutCtl(PWMA0_1_INST, DL_TIMER_CC_OCTL_INIT_VAL_LOW,
+    DL_TimerA_setCaptureCompareOutCtl(PWMA0_INST, DL_TIMER_CC_OCTL_INIT_VAL_LOW,
 		DL_TIMER_CC_OCTL_INV_OUT_DISABLED, DL_TIMER_CC_OCTL_SRC_FUNCVAL,
 		DL_TIMERA_CAPTURE_COMPARE_2_INDEX);
 
-    DL_TimerA_setCaptCompUpdateMethod(PWMA0_1_INST, DL_TIMER_CC_UPDATE_METHOD_IMMEDIATE, DL_TIMERA_CAPTURE_COMPARE_2_INDEX);
-    DL_TimerA_setCaptureCompareValue(PWMA0_1_INST, 2000, DL_TIMER_CC_2_INDEX);
+    DL_TimerA_setCaptCompUpdateMethod(PWMA0_INST, DL_TIMER_CC_UPDATE_METHOD_IMMEDIATE, DL_TIMERA_CAPTURE_COMPARE_2_INDEX);
+    DL_TimerA_setCaptureCompareValue(PWMA0_INST, 5000, DL_TIMER_CC_2_INDEX);
 
-    DL_TimerA_setCaptureCompareOutCtl(PWMA0_1_INST, DL_TIMER_CC_OCTL_INIT_VAL_LOW,
+    DL_TimerA_setCaptureCompareOutCtl(PWMA0_INST, DL_TIMER_CC_OCTL_INIT_VAL_LOW,
 		DL_TIMER_CC_OCTL_INV_OUT_DISABLED, DL_TIMER_CC_OCTL_SRC_FUNCVAL,
 		DL_TIMERA_CAPTURE_COMPARE_3_INDEX);
 
-    DL_TimerA_setCaptCompUpdateMethod(PWMA0_1_INST, DL_TIMER_CC_UPDATE_METHOD_IMMEDIATE, DL_TIMERA_CAPTURE_COMPARE_3_INDEX);
-    DL_TimerA_setCaptureCompareValue(PWMA0_1_INST, 2000, DL_TIMER_CC_3_INDEX);
+    DL_TimerA_setCaptCompUpdateMethod(PWMA0_INST, DL_TIMER_CC_UPDATE_METHOD_IMMEDIATE, DL_TIMERA_CAPTURE_COMPARE_3_INDEX);
+    DL_TimerA_setCaptureCompareValue(PWMA0_INST, 5000, DL_TIMER_CC_3_INDEX);
 
-    DL_TimerA_enableClock(PWMA0_1_INST);
+    DL_TimerA_enableClock(PWMA0_INST);
 
 
     
-    DL_TimerA_setCCPDirection(PWMA0_1_INST , DL_TIMER_CC0_OUTPUT | DL_TIMER_CC1_OUTPUT | DL_TIMER_CC2_OUTPUT | DL_TIMER_CC3_OUTPUT );
+    DL_TimerA_setCCPDirection(PWMA0_INST , DL_TIMER_CC0_OUTPUT | DL_TIMER_CC1_OUTPUT | DL_TIMER_CC2_OUTPUT | DL_TIMER_CC3_OUTPUT );
 
 
 }

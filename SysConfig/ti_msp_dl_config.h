@@ -89,35 +89,35 @@ extern "C" {
 bool SYSCFG_DL_SYSCTL_SYSPLL_init(void);
 
 
-/* Defines for PWMA0_1 */
-#define PWMA0_1_INST                                                       TIMA0
-#define PWMA0_1_INST_IRQHandler                                 TIMA0_IRQHandler
-#define PWMA0_1_INST_INT_IRQN                                   (TIMA0_INT_IRQn)
-#define PWMA0_1_INST_CLK_FREQ                                           80000000
+/* Defines for PWMA0 */
+#define PWMA0_INST                                                         TIMA0
+#define PWMA0_INST_IRQHandler                                   TIMA0_IRQHandler
+#define PWMA0_INST_INT_IRQN                                     (TIMA0_INT_IRQn)
+#define PWMA0_INST_CLK_FREQ                                             80000000
 /* GPIO defines for channel 0 */
-#define GPIO_PWMA0_1_C0_PORT                                               GPIOA
-#define GPIO_PWMA0_1_C0_PIN                                        DL_GPIO_PIN_0
-#define GPIO_PWMA0_1_C0_IOMUX                                     (IOMUX_PINCM1)
-#define GPIO_PWMA0_1_C0_IOMUX_FUNC                    IOMUX_PINCM1_PF_TIMA0_CCP0
-#define GPIO_PWMA0_1_C0_IDX                                  DL_TIMER_CC_0_INDEX
+#define GPIO_PWMA0_C0_PORT                                                 GPIOA
+#define GPIO_PWMA0_C0_PIN                                          DL_GPIO_PIN_0
+#define GPIO_PWMA0_C0_IOMUX                                       (IOMUX_PINCM1)
+#define GPIO_PWMA0_C0_IOMUX_FUNC                      IOMUX_PINCM1_PF_TIMA0_CCP0
+#define GPIO_PWMA0_C0_IDX                                    DL_TIMER_CC_0_INDEX
 /* GPIO defines for channel 1 */
-#define GPIO_PWMA0_1_C1_PORT                                               GPIOA
-#define GPIO_PWMA0_1_C1_PIN                                        DL_GPIO_PIN_1
-#define GPIO_PWMA0_1_C1_IOMUX                                     (IOMUX_PINCM2)
-#define GPIO_PWMA0_1_C1_IOMUX_FUNC                    IOMUX_PINCM2_PF_TIMA0_CCP1
-#define GPIO_PWMA0_1_C1_IDX                                  DL_TIMER_CC_1_INDEX
+#define GPIO_PWMA0_C1_PORT                                                 GPIOA
+#define GPIO_PWMA0_C1_PIN                                          DL_GPIO_PIN_1
+#define GPIO_PWMA0_C1_IOMUX                                       (IOMUX_PINCM2)
+#define GPIO_PWMA0_C1_IOMUX_FUNC                      IOMUX_PINCM2_PF_TIMA0_CCP1
+#define GPIO_PWMA0_C1_IDX                                    DL_TIMER_CC_1_INDEX
 /* GPIO defines for channel 2 */
-#define GPIO_PWMA0_1_C2_PORT                                               GPIOA
-#define GPIO_PWMA0_1_C2_PIN                                        DL_GPIO_PIN_7
-#define GPIO_PWMA0_1_C2_IOMUX                                    (IOMUX_PINCM14)
-#define GPIO_PWMA0_1_C2_IOMUX_FUNC                   IOMUX_PINCM14_PF_TIMA0_CCP2
-#define GPIO_PWMA0_1_C2_IDX                                  DL_TIMER_CC_2_INDEX
+#define GPIO_PWMA0_C2_PORT                                                 GPIOA
+#define GPIO_PWMA0_C2_PIN                                          DL_GPIO_PIN_7
+#define GPIO_PWMA0_C2_IOMUX                                      (IOMUX_PINCM14)
+#define GPIO_PWMA0_C2_IOMUX_FUNC                     IOMUX_PINCM14_PF_TIMA0_CCP2
+#define GPIO_PWMA0_C2_IDX                                    DL_TIMER_CC_2_INDEX
 /* GPIO defines for channel 3 */
-#define GPIO_PWMA0_1_C3_PORT                                               GPIOA
-#define GPIO_PWMA0_1_C3_PIN                                       DL_GPIO_PIN_28
-#define GPIO_PWMA0_1_C3_IOMUX                                     (IOMUX_PINCM3)
-#define GPIO_PWMA0_1_C3_IOMUX_FUNC                    IOMUX_PINCM3_PF_TIMA0_CCP3
-#define GPIO_PWMA0_1_C3_IDX                                  DL_TIMER_CC_3_INDEX
+#define GPIO_PWMA0_C3_PORT                                                 GPIOA
+#define GPIO_PWMA0_C3_PIN                                         DL_GPIO_PIN_28
+#define GPIO_PWMA0_C3_IOMUX                                       (IOMUX_PINCM3)
+#define GPIO_PWMA0_C3_IOMUX_FUNC                      IOMUX_PINCM3_PF_TIMA0_CCP3
+#define GPIO_PWMA0_C3_IDX                                    DL_TIMER_CC_3_INDEX
 
 
 
@@ -345,7 +345,7 @@ void SYSCFG_DL_GPIO_init(void);
 void SYSCFG_DL_SYSCTL_init(void);
 
 bool SYSCFG_DL_SYSCTL_SYSPLL_init(void);
-void SYSCFG_DL_PWMA0_1_init(void);
+void SYSCFG_DL_PWMA0_init(void);
 void SYSCFG_DL_QEI0_init(void);
 void SYSCFG_DL_QEI1_init(void);
 void SYSCFG_DL_I2C1_init(void);

@@ -12,7 +12,6 @@
 #include "bsp_uart.hpp"
 #include "bsp_pwm.hpp"
 #include "bsp_qei.hpp"
-#include "bsp_i2c.hpp"
 #include "bsp_can.hpp"
 #include "bsp_gpio.hpp"
 #include "bsp_key.hpp"
@@ -37,8 +36,6 @@ extern BspUart<64> bsp_uart3;  ///< UART3 (PA14/PA27), 调试输出 (115200 8N1)
 extern BspPwm      bsp_pwm_a0; ///< PWMA0_1 (TIMA0), 80MHz, period=2000, CH0(PA0)+CH1(PA1)+CH2(PA7)+CH3(PA28)
 extern BspQei      bsp_qei0;   ///< QEI0 (TIMG9), 正交编码器 PA3/PB9
 extern BspQei      bsp_qei1;   ///< QEI1 (TIMG8), 正交编码器 PB6/PB7
-extern BspI2c      bsp_i2c1;   ///< I2C1 (PB2/PB3),   巡线 PCA9555 (0x20)
-extern BspI2c      bsp_i2c2;   ///< I2C2 (PA23/PA24), OLED (0x3C)
 extern BspCan      bsp_can;    ///< MCAN0 (PA12/PA13), 1Mbps, 标准帧
 
 extern BspGpio gpio_led;   ///< LED   (PA4)

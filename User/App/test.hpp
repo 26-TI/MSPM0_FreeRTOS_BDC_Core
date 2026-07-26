@@ -146,6 +146,21 @@ extern "C"
  */
   void motor_proto_test_task(void *arg);
 
+  /**
+ * @brief 双电机开环控制测试任务
+ *
+ * 测试流程（PID 未调试，使用开环控制）:
+ *   - Phase 1: 两个电机同时正转，占空比从 10% → 50% 逐步递增
+ *   - Phase 2: 两个电机同时反转，占空比从 10% → 50%
+ *   - Phase 3: 左轮正转 + 右轮反转（原地旋转）
+ *   - Phase 4: 全部停止
+ *   - 每 500ms 通过 UART 打印左右轮速度/脉冲/方向
+ *
+ * @note 依赖 motor_left / motor_right 全局实例
+ * @param arg FreeRTOS 任务参数（未使用）
+ */
+  void motor_test_task(void *arg);
+
 #ifdef __cplusplus
 }
 #endif

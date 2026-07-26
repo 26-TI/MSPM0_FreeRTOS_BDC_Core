@@ -117,8 +117,7 @@ void BspCan::recv_poll()
   while (st.fillLvl > 0U)
   {
     DL_MCAN_RxBufElement rx;
-    DL_MCAN_readMsgRam(MCAN0_INST, DL_MCAN_MEM_TYPE_FIFO, 0U,
-                       DL_MCAN_RX_FIFO_NUM_0, &rx);
+    DL_MCAN_readMsgRam(MCAN0_INST, DL_MCAN_MEM_TYPE_FIFO, 0U, DL_MCAN_RX_FIFO_NUM_0, &rx);
     DL_MCAN_writeRxFIFOAck(MCAN0_INST, DL_MCAN_RX_FIFO_NUM_0, st.getIdx);
 
     uint32_t id  = (rx.id >> 18U) & 0x7FFU;
@@ -130,8 +129,7 @@ void BspCan::recv_poll()
   }
 }
 
-bool BspCan::recv_read(uint32_t *id, uint8_t *data, uint8_t *len,
-                      uint32_t timeout)
+bool BspCan::recv_read(uint32_t *id, uint8_t *data, uint8_t *len, uint32_t timeout)
 {
   uint8_t msg[CAN_MSG_SIZE];
   size_t  n = xStreamBufferReceive(_rx_stream, msg, CAN_MSG_SIZE, timeout);
@@ -163,9 +161,9 @@ void BspCan::get_status(Status *st)
 
   st->tx_err_cnt    = ec.transErrLogCnt;
   st->rx_err_cnt    = ec.recErrCnt;
-  st->activity    = ps.act;
+  st->activity      = ps.act;
   st->last_err_code = ps.lastErrCode;
-  st->bus_off      = (ps.busOffStatus != 0U);
+  st->bus_off       = (ps.busOffStatus != 0U);
 }
 
 void BspCan::set_loopback(bool enable)
@@ -180,7 +178,8 @@ void BspCan::enable_irq()
 {
   DL_MCAN_enableIntr(MCAN0_INST, DL_MCAN_INTR_MASK_ALL, 0U);
   DL_MCAN_enableIntr(MCAN0_INST,
-                     DL_MCAN_INTERRUPT_RF0N | DL_MCAN_INTERRUPT_RF0L, 1U);
+                     DL_MCAN_INTERRUPT_RF0N | DL_MCAN_INTERRUPT_RF0L,
+                     1U);
   DL_MCAN_clearInterruptStatus(MCAN0_INST, DL_MCAN_MSP_INTERRUPT_LINE0);
   __DSB();
   NVIC_EnableIRQ(MCAN0_INST_INT_IRQN);
@@ -214,8 +213,7 @@ void BspCan::isr_handler()
     while (st.fillLvl > 0U)
     {
       DL_MCAN_RxBufElement rx;
-      DL_MCAN_readMsgRam(MCAN0_INST, DL_MCAN_MEM_TYPE_FIFO, 0U,
-                         DL_MCAN_RX_FIFO_NUM_0, &rx);
+      DL_MCAN_readMsgRam(MCAN0_INST, DL_MCAN_MEM_TYPE_FIFO, 0U, DL_MCAN_RX_FIFO_NUM_0, &rx);
       DL_MCAN_writeRxFIFOAck(MCAN0_INST, DL_MCAN_RX_FIFO_NUM_0, st.getIdx);
 
       uint32_t id  = (rx.id >> 18U) & 0x7FFU;

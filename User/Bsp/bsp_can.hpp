@@ -62,8 +62,7 @@ public:
    * @param      timeout 超时 (ticks), 0=非阻塞, portMAX_DELAY=永久等
    * @return true 有数据, false 超时
    */
-  bool recv_read(uint32_t *id, uint8_t *data, uint8_t *len,
-                uint32_t timeout = portMAX_DELAY);
+  bool recv_read(uint32_t *id, uint8_t *data, uint8_t *len, uint32_t timeout = portMAX_DELAY);
 
   void get_status(Status *st);
   void set_loopback(bool enable);
@@ -77,7 +76,7 @@ private:
   void write_unlock();
   void write_lock();
 
-  bool                 _loopback = false;
+  bool                 _loopback  = false;
   StreamBufferHandle_t _rx_stream = nullptr;
   StreamBufferHandle_t _tx_stream = nullptr;
 

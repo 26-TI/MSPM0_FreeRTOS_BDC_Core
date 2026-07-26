@@ -13,10 +13,7 @@ IndentWidth:     2
 # 访问权限说明符(public/private等)的偏移
 AccessModifierOffset: -2
 
-# 花括号风格: 独立成行 (Allman/BSD)
-BreakBeforeBraces: Allman
-
-# # 开括号(开圆括号、尖括号、方括号)后的对齐: Align, DontAlign, AlwaysBreak(总是在开括号后换行)
+# 开括号(开圆括号、尖括号、方括号)后的对齐: Align, DontAlign, AlwaysBreak(总是在开括号后换行)
 # AlignAfterOpenBracket: Align
 
 # 连续赋值时，对齐所有等号
@@ -78,10 +75,18 @@ AlwaysBreakTemplateDeclarations: true
 # -- true - 不做强制要求
 BinPackArguments: false
 
+# 是否允许把所有参数放到下一行（而不是跟函数名同行）
+# -- true  - 允许参数全部移到下一行
+# -- false - 参数必须从函数名所在行开始
+AllowAllArgumentsOnNextLine: false
+
 # 函数声明、定义时，参数的放置规则
 # -- false - 参数要么放在同一行，要么每个参数占用一行
 # -- true - 不做强制要求
 BinPackParameters: false
+
+# 是否允许把所有声明参数放到下一行
+AllowAllParametersOfDeclarationOnNextLine: false
 
 # 大括号放置风格
 # -- Attach - 大括号紧随前方内容，放在同一行
@@ -266,7 +271,7 @@ NamespaceIndentation: Inner
 # ObjCSpaceAfterProperty: false
 # ObjCSpaceBeforeProtocolList: false
 # PenaltyBreakAssignment: 2
-# PenaltyBreakBeforeFirstCallParameter: 1
+PenaltyBreakBeforeFirstCallParameter: 1000000
 # PenaltyBreakComment: 300
 # PenaltyBreakFirstLessLess: 120
 # PenaltyBreakString: 1000

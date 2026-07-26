@@ -22,8 +22,6 @@ BspUart<64> bsp_uart3;
 BspPwm bsp_pwm_a0;
 BspQei bsp_qei0;
 BspQei bsp_qei1;
-BspI2c bsp_i2c1;
-BspI2c bsp_i2c2;
 BspCan bsp_can;
 
 BspGpio gpio_led;
@@ -63,21 +61,17 @@ void bsp_init() {
                   UART3_INST_DMA_TRIGGER});
 
   /* ---- PWM ---- */
-  /* PWMA0_1 — TIMA0, 80MHz, period=2000, 4 通道: PA0/PA1/PA7/PA28 */
-  bsp_pwm_a0.init({PWMA0_1_INST,
-                   PWMA0_1_INST_CLK_FREQ,
-                   2000,
+  /* PWMA0_1 — TIMA0, 80MHz, period=5000, 4 通道: PA0/PA1/PA7/PA28 */
+  bsp_pwm_a0.init({PWMA0_INST,
+                   PWMA0_INST_CLK_FREQ,
+                   5000,
                    4,
-                   {GPIO_PWMA0_1_C0_IDX, GPIO_PWMA0_1_C1_IDX,
-                    GPIO_PWMA0_1_C2_IDX, GPIO_PWMA0_1_C3_IDX}});
+                   {GPIO_PWMA0_C0_IDX, GPIO_PWMA0_C1_IDX,
+                    GPIO_PWMA0_C2_IDX, GPIO_PWMA0_C3_IDX}});
 
   /* ---- QEI — 正交编码器 ---- */
   bsp_qei0.init({QEI0_INST}); /* QEI0: TIMG9, PA3/PB9 */
   bsp_qei1.init({QEI1_INST}); /* QEI1: TIMG8, PB6/PB7 */
-
-  /* ---- I2C — 巡线 PCA9555(I2C1), OLED(I2C2) ---- */
-  bsp_i2c1.init({I2C1_INST}); /* PB2(SCL)/PB3(SDA) */
-  bsp_i2c2.init({I2C2_INST}); /* PA23(SCL)/PA24(SDA) */
 
   /* ---- MCAN0 — 1Mbps, 正常模式, PA12(TX)/PA13(RX) ---- */
   bsp_can.init(BspCan::NORMAL);
