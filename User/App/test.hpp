@@ -82,7 +82,7 @@ extern "C"
  * @param arg FreeRTOS 任务参数（未使用）
  */
   void gpio_test_task(void *arg);
-  
+
   /**
  * @brief 串口协议发送测试任务
  *

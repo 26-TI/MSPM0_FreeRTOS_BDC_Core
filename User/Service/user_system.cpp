@@ -20,8 +20,7 @@ namespace
       buf[written++] = *s++;
   }
 
-  static void append_unsigned(char *buf, size_t &written, size_t size, unsigned long long value, int base,
-                              bool uppercase)
+  static void append_unsigned(char *buf, size_t &written, size_t size, unsigned long long value, int base, bool uppercase)
   {
     char digits[64];
     int  len = 0;

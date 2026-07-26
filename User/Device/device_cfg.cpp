@@ -7,8 +7,8 @@
 #include "bsp_cfg.hpp"
 
 /* ==================== 全局实例 ==================== */
-Motor    motor_left;
-Motor    motor_right;
+Motor motor_left;
+Motor motor_right;
 
 /* ==================== 设备初始化 ==================== */
 void device_init()
@@ -18,26 +18,24 @@ void device_init()
     .pwm               = &bsp_pwm_a0,
     .qei               = &bsp_qei1,
     .enable_pin        = &gpio_men1, /* PA15: 左轮使能 */
-    .pwm_ch_a          = 0,    /* CH0: PA7 */
-    .pwm_ch_b          = 3,    /* CH3: PA28 */
-    .encoder_lines     = 5000, /* 编码器线数 */
-    .gear_ratio        = 28.0f,  /* 减速比 28:1 */
-    .control_period_ms = 5,      /* 5ms 控制周期 */
-    .pwm_max           = 5000    /* PWM 最大占空比 = period */
+    .pwm_ch_a          = 0,          /* CH0: PA7 */
+    .pwm_ch_b          = 3,          /* CH3: PA28 */
+    .encoder_lines     = 5000,       /* 编码器线数 */
+    .gear_ratio        = 28.0f,      /* 减速比 28:1 */
+    .control_period_ms = 5,          /* 5ms 控制周期 */
+    .pwm_max           = 5000        /* PWM 最大占空比 = period */
   });
 
   /* ---- 右轮电机 — PWM-G0 CH2(正转)/CH1(反转), QEI0, EN=PA16 ---- */
-  motor_right.init({
-    .pwm               = &bsp_pwm_a0,
-    .qei               = &bsp_qei0,
-    .enable_pin        = &gpio_men2, /* PA16: 右轮使能 */
-    .pwm_ch_a          = 2,    /* CH2: PA1 */
-    .pwm_ch_b          = 1,    /* CH1: PA0 */
-    .encoder_lines     = 5000,
-    .gear_ratio        = 28.0f,
-    .control_period_ms = 5,
-    .pwm_max           = 5000
-  });
+  motor_right.init({.pwm               = &bsp_pwm_a0,
+                    .qei               = &bsp_qei0,
+                    .enable_pin        = &gpio_men2, /* PA16: 右轮使能 */
+                    .pwm_ch_a          = 2,          /* CH2: PA1 */
+                    .pwm_ch_b          = 1,          /* CH1: PA0 */
+                    .encoder_lines     = 5000,
+                    .gear_ratio        = 28.0f,
+                    .control_period_ms = 5,
+                    .pwm_max           = 5000});
 
   /* Track (PCA9555 巡线) — I2C1, 地址 0x20 */
   // iic_track.init(&bsp_i2c1, 0x20);

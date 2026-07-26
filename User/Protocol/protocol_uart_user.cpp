@@ -41,7 +41,7 @@ static uint8_t g_proto_uart_inst_id = 0U;
 void ProtocolUartUser::init(const Config &cfg)
 {
   _uart    = cfg.uart;
-  _on_cmd   = cfg.on_cmd;
+  _on_cmd  = cfg.on_cmd;
   _header1 = cfg.header1;
   _header2 = cfg.header2;
   _tail    = cfg.tail;
@@ -50,8 +50,7 @@ void ProtocolUartUser::init(const Config &cfg)
   char name[16];
   snprintf(name, sizeof(name), "proto_uart%u", g_proto_uart_inst_id++);
 
-  xTaskCreate(_task_entry, name, 256U, this,
-              tskIDLE_PRIORITY + 2U, nullptr);
+  xTaskCreate(_task_entry, name, 256U, this, tskIDLE_PRIORITY + 2U, nullptr);
 }
 
 /* ================================================================

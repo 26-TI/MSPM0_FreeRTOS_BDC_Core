@@ -30,10 +30,10 @@
 int main(void)
 {
   /* ---- 硬件初始化 ---- */
-  SYSCFG_DL_init();  /* SysConfig 自动生成: 时钟 / GPIO / 外设 */
-  bsp_init();        /* BSP 驱动对象绑定到硬件实例 */
-  protocol_init();   /* 协议层初始化 */
-  device_init();     /* 设备层初始化: 电机 */
+  SYSCFG_DL_init(); /* SysConfig 自动生成: 时钟 / GPIO / 外设 */
+  bsp_init();       /* BSP 驱动对象绑定到硬件实例 */
+  protocol_init();  /* 协议层初始化 */
+  device_init();    /* 设备层初始化: 电机 */
 
   /* ---- 创建 FreeRTOS 任务 ---- */
 

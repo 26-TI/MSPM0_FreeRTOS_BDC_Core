@@ -70,7 +70,7 @@ public:
   struct Config
   {
     BspUart<64>      *uart;                      ///< 独占的串口指针
-    ProtoUartCallback on_cmd   = nullptr;         ///< 收到有效帧的回调
+    ProtoUartCallback on_cmd  = nullptr;         ///< 收到有效帧的回调
     uint8_t           header1 = PROTO_UART_HDR1; ///< 帧头 1
     uint8_t           header2 = PROTO_UART_HDR2; ///< 帧头 2
     uint8_t           tail    = PROTO_UART_TAIL; ///< 帧尾
@@ -113,7 +113,7 @@ private:
   static uint8_t _checksum(const uint8_t *buf, uint8_t len);
 
   BspUart<64>      *_uart    = nullptr; ///< 绑定的串口
-  ProtoUartCallback _on_cmd   = nullptr; ///< 用户回调
+  ProtoUartCallback _on_cmd  = nullptr; ///< 用户回调
   uint8_t           _header1 = PROTO_UART_HDR1;
   uint8_t           _header2 = PROTO_UART_HDR2;
   uint8_t           _tail    = PROTO_UART_TAIL;

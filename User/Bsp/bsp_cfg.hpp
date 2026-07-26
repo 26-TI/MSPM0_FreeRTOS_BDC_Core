@@ -37,12 +37,12 @@ extern BspQei      bsp_qei0;   ///< QEI0 (TIMG9), 正交编码器 PA3/PB9
 extern BspQei      bsp_qei1;   ///< QEI1 (TIMG8), 正交编码器 PB6/PB7
 extern BspCan      bsp_can;    ///< MCAN0 (PA12/PA13), 1Mbps, 标准帧
 
-extern BspGpio gpio_led;   ///< LED   (PA4)
-extern BspGpio gpio_buzz;  ///< 蜂鸣器 (PA2)
-extern BspGpio gpio_men1;  ///< MEN1   (PA15)
-extern BspGpio gpio_men2;  ///< MEN2   (PA16)
-extern BspKey  key_1;      ///< 按键 1 (PB8)
-extern BspKey  key_2;      ///< 按键 2 (PA8)
-extern BspKey  key_3;      ///< 按键 3 (PA31)
+extern BspGpio gpio_led;  ///< LED   (PA4)
+extern BspGpio gpio_buzz; ///< 蜂鸣器 (PA2)
+extern BspGpio gpio_men1; ///< MEN1   (PA15)
+extern BspGpio gpio_men2; ///< MEN2   (PA16)
+extern BspKey  key_1;     ///< 按键 1 (PB8)
+extern BspKey  key_2;     ///< 按键 2 (PA8)
+extern BspKey  key_3;     ///< 按键 3 (PA31)
 
 #endif /* __BSP_CFG_HPP__ */

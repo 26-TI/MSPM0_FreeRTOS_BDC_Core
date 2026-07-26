@@ -19,18 +19,18 @@ BspUart<64> bsp_uart0;
 BspUart<64> bsp_uart1;
 BspUart<64> bsp_uart4;
 BspUart<64> bsp_uart3;
-BspPwm bsp_pwm_a0;
-BspQei bsp_qei0;
-BspQei bsp_qei1;
-BspCan bsp_can;
+BspPwm      bsp_pwm_a0;
+BspQei      bsp_qei0;
+BspQei      bsp_qei1;
+BspCan      bsp_can;
 
 BspGpio gpio_led;
 BspGpio gpio_buzz;
 BspGpio gpio_men1;
 BspGpio gpio_men2;
-BspKey key_1;
-BspKey key_2;
-BspKey key_3;
+BspKey  key_1;
+BspKey  key_2;
+BspKey  key_3;
 
 /* ==================== BSP 初始化 ==================== */
 
@@ -43,20 +43,19 @@ BspKey key_3;
  *   - 参数从 SysConfig 自动生成的宏获取（如 UART0_INST, UART0_INST_INT_IRQN）
  *   - init() 仅做软件校验和引用保存，不操作硬件寄存器
  */
-void bsp_init() {
+void bsp_init()
+{
   /* ---- UART — 115200 8N1, DMA TX, FIFO RX ---- */
-  bsp_uart0.init({UART0_INST, UART0_INST_INT_IRQN, DMA_CH0_CHAN_ID,
-                  UART0_INST_DMA_TRIGGER});
+  bsp_uart0.init({UART0_INST, UART0_INST_INT_IRQN, DMA_CH0_CHAN_ID, UART0_INST_DMA_TRIGGER});
 
-  bsp_uart1.init({UART1_INST, UART1_INST_INT_IRQN, DMA_CH1_CHAN_ID,
-                  UART1_INST_DMA_TRIGGER});
+  bsp_uart1.init({UART1_INST, UART1_INST_INT_IRQN, DMA_CH1_CHAN_ID, UART1_INST_DMA_TRIGGER});
 
   bsp_uart4.init({UART4_INST, /* 硬件实例为 UART4 (PB17/PB18) */
-                  UART4_INST_INT_IRQN, DMA_CH3_CHAN_ID,
+                  UART4_INST_INT_IRQN,
+                  DMA_CH3_CHAN_ID,
                   UART4_INST_DMA_TRIGGER});
 
-  bsp_uart3.init({UART3_INST, UART3_INST_INT_IRQN, DMA_CH2_CHAN_ID,
-                  UART3_INST_DMA_TRIGGER});
+  bsp_uart3.init({UART3_INST, UART3_INST_INT_IRQN, DMA_CH2_CHAN_ID, UART3_INST_DMA_TRIGGER});
 
   /* ---- PWM ---- */
   /* PWMA0_1 — TIMA0, 80MHz, period=5000, 4 通道: PA0/PA1/PA7/PA28 */
@@ -64,8 +63,7 @@ void bsp_init() {
                    PWMA0_INST_CLK_FREQ,
                    5000,
                    4,
-                   {GPIO_PWMA0_C0_IDX, GPIO_PWMA0_C1_IDX,
-                    GPIO_PWMA0_C2_IDX, GPIO_PWMA0_C3_IDX}});
+                   {GPIO_PWMA0_C0_IDX, GPIO_PWMA0_C1_IDX, GPIO_PWMA0_C2_IDX, GPIO_PWMA0_C3_IDX}});
 
   /* ---- QEI — 正交编码器 ---- */
   bsp_qei0.init({QEI0_INST}); /* QEI0: TIMG9, PA3/PB9 */
@@ -85,6 +83,4 @@ void bsp_init() {
   key_1.init({GPIOB, KEY_PIN_KEY1_PIN, true, 2U, 20U}); /* PB8  */
   key_2.init({GPIOA, KEY_PIN_KEY2_PIN, true, 2U, 20U}); /* PA8  */
   key_3.init({GPIOA, KEY_PIN_KEY3_PIN, true, 2U, 20U}); /* PA31 */
-
-
 }

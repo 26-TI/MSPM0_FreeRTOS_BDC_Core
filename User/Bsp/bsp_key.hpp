@@ -61,10 +61,10 @@ public:
    */
   struct Config
   {
-    GPIO_Regs *port;                ///< GPIO 端口 (GPIOA / GPIOB)
-    uint32_t   pin;                 ///< 引脚掩码 (DL_GPIO_PIN_x)
-    bool       active_low    = true; ///< 有效电平: true=低有效(上拉), false=高有效(下拉)
-    uint8_t    debounce_cnt  = 3U;   ///< 消抖计数 (连续相同电平次数)
+    GPIO_Regs *port;                  ///< GPIO 端口 (GPIOA / GPIOB)
+    uint32_t   pin;                   ///< 引脚掩码 (DL_GPIO_PIN_x)
+    bool       active_low     = true; ///< 有效电平: true=低有效(上拉), false=高有效(下拉)
+    uint8_t    debounce_cnt   = 3U;   ///< 消抖计数 (连续相同电平次数)
     uint16_t   long_press_cnt = 200U; ///< 长按计数阈值 (按住持续次数)
   };
 
@@ -97,14 +97,14 @@ public:
   Event poll();
 
 private:
-  GPIO_Regs *_port         = nullptr; ///< GPIO 端口指针
-  uint32_t   _pin          = 0U;      ///< 引脚掩码
-  bool       _active_low    = true;    ///< 有效电平极性
-  uint8_t    _debounce_cnt  = 3U;      ///< 消抖确认次数
+  GPIO_Regs *_port           = nullptr; ///< GPIO 端口指针
+  uint32_t   _pin            = 0U;      ///< 引脚掩码
+  bool       _active_low     = true;    ///< 有效电平极性
+  uint8_t    _debounce_cnt   = 3U;      ///< 消抖确认次数
   uint16_t   _long_press_cnt = 3U;      ///< 长按计数阈值
 
   bool     _last_stable = false; ///< 上一次确认的稳定状态 (true=按下)
-  uint8_t  _cnt        = 0U;    ///< 当前连续不一致计数
+  uint8_t  _cnt         = 0U;    ///< 当前连续不一致计数
   uint16_t _hold_cnt    = 0U;    ///< 按下保持计数
   bool     _long_fired  = false; ///< 本次按下周期内长按是否已触发
 };

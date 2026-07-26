@@ -38,17 +38,17 @@
  */
 void BspKey::init(const Config &cfg)
 {
-  _port         = cfg.port;
-  _pin          = cfg.pin;
-  _active_low    = cfg.active_low;
-  _debounce_cnt  = cfg.debounce_cnt;
+  _port           = cfg.port;
+  _pin            = cfg.pin;
+  _active_low     = cfg.active_low;
+  _debounce_cnt   = cfg.debounce_cnt;
   _long_press_cnt = cfg.long_press_cnt;
-  _cnt          = 0U;
-  _hold_cnt      = 0U;
-  _long_fired    = false;
+  _cnt            = 0U;
+  _hold_cnt       = 0U;
+  _long_fired     = false;
 
   /* 以当前电平作为初始稳定状态 */
-  bool raw    = (DL_GPIO_readPins(_port, _pin) != 0U);
+  bool raw     = (DL_GPIO_readPins(_port, _pin) != 0U);
   _last_stable = _active_low ? !raw : raw;
 }
 
