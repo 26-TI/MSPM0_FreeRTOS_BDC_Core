@@ -9,7 +9,7 @@
 
 #include "test.hpp"
 #include "bsp_cfg.hpp"
-#include "protocol_uart_user.hpp"
+#include "protocol_cfg.hpp"
 
 #include "task.h"
 

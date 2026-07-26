@@ -12,43 +12,6 @@
 #include "task.h"
 
 /* ===================================================================
- * 轮询接收 — recvPoll(裸机读FIFO) + recvRead(非阻塞取)
- * =================================================================== */
-
-void can_recv_test_task(void *arg)
-{
-  (void)arg;
-
-  bsp_uart4.uart_printf("[CAN-RECV] Polling mode\r\n");
-
-  uint32_t total = 0U;
-
-  while (1)
-  {
-    /* 从 MCAN FIFO 搬到 StreamBuffer */
-    bsp_can.recv_poll();
-
-    /* 非阻塞取（timeout=0，空则立即返回 false） */
-    uint32_t rx_id;
-    uint8_t  rx_data[8];
-    uint8_t  rx_len;
-
-    while (bsp_can.recv_read(&rx_id, rx_data, &rx_len, 0U))
-    {
-      total++;
-      bsp_uart4.uart_printf(
-        "[CAN]%lu ID=0x%03lX LEN=%u "
-        "%02X %02X %02X %02X %02X %02X %02X %02X\r\n",
-        total, rx_id, rx_len,
-        rx_data[0], rx_data[1], rx_data[2], rx_data[3],
-        rx_data[4], rx_data[5], rx_data[6], rx_data[7]);
-    }
-
-    vTaskDelay(pdMS_TO_TICKS(2));
-  }
-}
-
-/* ===================================================================
  * ISR 接收 — 中断自动搬 FIFO→StreamBuffer, recvRead 系统阻塞等
  * =================================================================== */
 

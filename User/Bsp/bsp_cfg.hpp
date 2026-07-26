@@ -15,7 +15,6 @@
 #include "bsp_can.hpp"
 #include "bsp_gpio.hpp"
 #include "bsp_key.hpp"
-#include "protocol_uart_user.hpp"
 
 /* ==================== 函数声明 ==================== */
 
@@ -45,7 +44,5 @@ extern BspGpio gpio_men2;  ///< MEN2   (PA16)
 extern BspKey  key_1;      ///< 按键 1 (PB8)
 extern BspKey  key_2;      ///< 按键 2 (PA8)
 extern BspKey  key_3;      ///< 按键 3 (PA31)
-
-extern ProtocolUartUser proto_uart; ///< 用户串口协议 (独占 UART2)
 
 #endif /* __BSP_CFG_HPP__ */

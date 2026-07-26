@@ -32,8 +32,6 @@ BspKey key_1;
 BspKey key_2;
 BspKey key_3;
 
-ProtocolUartUser proto_uart;
-
 /* ==================== BSP 初始化 ==================== */
 
 /**
@@ -88,6 +86,5 @@ void bsp_init() {
   key_2.init({GPIOA, KEY_PIN_KEY2_PIN, true, 2U, 20U}); /* PA8  */
   key_3.init({GPIOA, KEY_PIN_KEY3_PIN, true, 2U, 20U}); /* PA31 */
 
-  extern void proto_on_command(uint8_t cmd, const uint8_t *data, uint8_t len);
-  proto_uart.init({&bsp_uart4, proto_on_command});
+
 }
