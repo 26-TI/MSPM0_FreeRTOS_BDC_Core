@@ -1,89 +1,78 @@
 #include "motor.hpp"
 
-Motor::Motor() : _duty_a(0), _duty_b(0) {}
-
-bool Motor::init(const Config &cfg)
+void Motor::Motor_Init(const Config &cfg)
 {
-  if (!cfg.pwm || !cfg.qei)
-    return false;
-
-  if (cfg.encoder_lines == 0 || cfg.control_period_ms == 0)
-    return false;
-
-  if (cfg.pwm_ch_a >= BspPwm::MAX_CH || cfg.pwm_ch_b >= BspPwm::MAX_CH)
-    return false;
-
   _cfg = cfg;
 
-  _pulses_per_rev = (float)cfg.encoder_lines * 4.0f * cfg.gear_ratio;
+  _cfg.enable_pin->reset();
 
-  cfg.qei->set_count(32767);
-  _state = {};
-
-  if (_cfg.enable_pin)
-    _cfg.enable_pin->reset();
-
-  return true;
+  _state.target = 0;
+  _state.speed  = 0;
 }
 
-void Motor::set_duty(uint32_t ch_a, uint32_t ch_b)
+
+void Motor::PIDL_Init(float p, float i, float d, float t, float out_max, float i_max, uint8_t i_epsilon_enable)
 {
-  if (ch_a > _cfg.pwm_max)
-    ch_a = _cfg.pwm_max;
-
-  if (ch_b > _cfg.pwm_max)
-    ch_b = _cfg.pwm_max;
-
-  _duty_a = ch_a;
-  _duty_b = ch_b;
-  _output_pwm(ch_a, ch_b);
+  _pidl.init(p, i, d, t, out_max, i_max, i_epsilon_enable);
+}
+void Motor::PIDH_Init(float p, float i, float d, float t, float out_max, float i_max, uint8_t i_epsilon_enable)
+{
+  _pidh.init(p, i, d, t, out_max, i_max, i_epsilon_enable);
 }
 
 void Motor::update()
 {
-  uint16_t cur   = _cfg.qei->get_count();
-  int16_t  delta = (int16_t)(cur - 32767);
+  float pid_out = 0;
+
+  _state.speed = (_cfg.qei->get_count() - 32767.0f) * (1000.0f / _cfg.control_period_ms) / (_cfg.encoder_lines * 4 * _cfg.gear_ratio);
   _cfg.qei->set_count(32767);
 
-  _state.total_pulses += (int32_t)delta;
-  _state.current_speed_rpm = _pulses_to_rpm(delta);
-  _state.is_forward        = (delta >= 0);
+  if (_speed_statue == 0 && (_state.speed > _speed_h || _state.speed < -_speed_h)) _speed_statue = 1;
+  if (_speed_statue == 1 && (_state.speed > -_speed_l && _state.speed < _speed_l)) _speed_statue = 0;
+
+  if (_pid_enable == 1)
+  {
+    if (_speed_statue == 0) pid_out = _pidl.calc(_state.target, _state.speed);
+    if (_speed_statue == 1) pid_out = _pidh.calc(_state.target, _state.speed);
+
+    _cfg.pwm->set_duty(_cfg.pwm_ch_b, 2500 + pid_out);
+  }
 }
 
-void Motor::stop()
-{
-  _output_pwm(0, 0);
-
-  if (_cfg.enable_pin)
-    _cfg.enable_pin->reset();
-
-  _state = {};
-}
 
 void Motor::enable()
 {
-  if (_cfg.enable_pin)
+  if (_pid_enable == 0)
+  {
+    _cfg.pwm->set_duty(_cfg.pwm_ch_b, 2500);
+    _cfg.pwm->set_duty(_cfg.pwm_ch_a, 2500);
     _cfg.enable_pin->set();
+  }
 }
 
 void Motor::disable()
 {
-  _output_pwm(0, 0);
-
-  if (_cfg.enable_pin)
-    _cfg.enable_pin->reset();
+  _pid_enable = 0;
+  _cfg.enable_pin->reset();
+  _cfg.pwm->set_duty(_cfg.pwm_ch_b, 2500);
+  _cfg.pwm->set_duty(_cfg.pwm_ch_a, 2500);
 }
 
-float Motor::_pulses_to_rpm(int16_t delta) const
+void Motor::speed_control_enable()
 {
-  /* RPM = (delta / pulses_per_rev) * (60000 / control_period_ms) */
-  return (float)delta / _pulses_per_rev * (60000.0f / (float)_cfg.control_period_ms);
+  if (_pid_enable == 0)
+  {
+    _cfg.pwm->set_duty(_cfg.pwm_ch_b, 2500);
+    _cfg.pwm->set_duty(_cfg.pwm_ch_a, 2500);
+    _cfg.enable_pin->set();
+    _pid_enable = 1;
+  }
 }
 
-void Motor::_output_pwm(uint32_t a, uint32_t b)
+void Motor::set_speed(float target)
 {
-  _cfg.pwm->set_duty(_cfg.pwm_ch_a, a);
-  _cfg.pwm->set_duty(_cfg.pwm_ch_b, b);
-  _state.pwm_a = a;
-  _state.pwm_b = b;
+  _state.target = target;
 }
+//
+// _state.pwm_a = a;
+// _state.pwm_b = b;

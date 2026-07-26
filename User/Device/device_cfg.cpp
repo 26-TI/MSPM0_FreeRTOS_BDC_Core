@@ -14,27 +14,36 @@ Motor motor_right;
 void device_init()
 {
   /* ---- 左轮电机 — PWM-G0 CH0(正转)/CH3(反转), QEI1, EN=PA15 ---- */
-  motor_left.init({
+  motor_left.Motor_Init({
     .pwm               = &bsp_pwm_a0,
     .qei               = &bsp_qei1,
     .enable_pin        = &gpio_men1, /* PA15: 左轮使能 */
-    .pwm_ch_a          = 0,          /* CH0: PA7 */
-    .pwm_ch_b          = 3,          /* CH3: PA28 */
-    .encoder_lines     = 500,       /* 编码器线数 */
+    .pwm_ch_a          = 3,          /* CH0: PA7 */
+    .pwm_ch_b          = 0,          /* CH3: PA28 */
+    .encoder_lines     = 500,        /* 编码器线数 */
     .gear_ratio        = 28.0f,      /* 减速比 28:1 */
-    .control_period_ms = 2,          /* 5ms 控制周期 */
+    .control_period_ms = 2,          /* 2ms 控制周期 */
+    .pwm_max           = 5000,       /* PWM 周期 */
   });
 
+  motor_left.PIDH_Init(1500, 40000, 0, 0.002, 2400, 1100, 1);
+  motor_left.PIDL_Init(2500, 140000, 0, 0.002, 2400, 1100, 0);
+
   /* ---- 右轮电机 — PWM-G0 CH2(正转)/CH1(反转), QEI0, EN=PA16 ---- */
-  motor_right.init({.pwm               = &bsp_pwm_a0,
-                    .qei               = &bsp_qei0,
-                    .enable_pin        = &gpio_men2, /* PA16: 右轮使能 */
-                    .pwm_ch_a          = 2,          /* CH2: PA1 */
-                    .pwm_ch_b          = 1,          /* CH1: PA0 */
-                    .encoder_lines     = 500,
-                    .gear_ratio        = 28.0f,
-                    .control_period_ms = 2,
-});
+  motor_right.Motor_Init({
+    .pwm               = &bsp_pwm_a0,
+    .qei               = &bsp_qei0,
+    .enable_pin        = &gpio_men2, /* PA16: 右轮使能 */
+    .pwm_ch_a          = 2,          /* CH2: PA1 */
+    .pwm_ch_b          = 1,          /* CH1: PA0 */
+    .encoder_lines     = 500,
+    .gear_ratio        = 28.0f,
+    .control_period_ms = 2,
+    .pwm_max           = 5000, /* PWM 周期 */
+  });
+
+  motor_right.PIDH_Init(1500, 40000, 0, 0.002, 2400, 1100, 1);
+  motor_right.PIDL_Init(2500, 140000, 0, 0.002, 2400, 1100, 0);
 
   /* Track (PCA9555 巡线) — I2C1, 地址 0x20 */
   // iic_track.init(&bsp_i2c1, 0x20);

@@ -32,6 +32,7 @@
 #include "bsp_pwm.hpp"
 #include "bsp_qei.hpp"
 #include "bsp_gpio.hpp"
+#include "pid.hpp"
 #include <stdint.h>
 
 class Motor
@@ -47,33 +48,39 @@ public:
     uint16_t encoder_lines;     ///< 编码器线数
     float    gear_ratio;        ///< 减速比
     uint16_t control_period_ms; ///< 控制周期 (ms)
+    uint32_t pwm_max;           ///< PWM 最大占空比 (period)
   };
 
   struct State
   {
-    float    current_speed_rpm; ///< 当前转速 (RPM)
-    uint16_t pwm_a, pwm_b;      ///< 当前 PWM 占空比
+    float target;
+    float speed;
   };
 
-  Motor();
+  void Motor_Init(const Config &cfg);
 
-  bool init(const Config &cfg);
+  void PIDL_Init(float p, float i, float d, float t, float out_max, float i_max, uint8_t i_epsilon_enable);
+  void PIDH_Init(float p, float i, float d, float t, float out_max, float i_max, uint8_t i_epsilon_enable);
+
   void update();
-  void stop();
+  void enable();
+  void disable();
+  void speed_control_enable();
 
-  void  enable();
-  void  disable();
-  const State &get_state() const { return _state; }
+  void set_speed(float target);
 
 private:
+  Config _cfg{};
+  State  _state{};
 
-  Config   _cfg{};
-  State    _state{};
-  float    _pulses_per_rev; ///< 每转脉冲数 = encoder_lines * 4 * gear_ratio
-  uint16_t _last_count;
-  bool     _enabled;
-  uint32_t _duty_a, _duty_b;
+  PID _pidl;
+  PID _pidh;
 
+  float _speed_l = 0.8;
+  float _speed_h = 1.2;
+
+  uint8_t _speed_statue = 0;
+  uint8_t _pid_enable   = 0;
 };
 
 #endif

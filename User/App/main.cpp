@@ -38,10 +38,10 @@ int main(void)
   /* ---- 创建 FreeRTOS 任务 ---- */
 
   // /* GPIO / 按键 — 必开 */
-  xTaskCreate(gpio_test_task, "gpio", 0x100, NULL, configMAX_PRIORITIES - 3, NULL);
+  // xTaskCreate(gpio_test_task, "gpio", 0x100, NULL, configMAX_PRIORITIES - 3, NULL);
 
   /* 双电机开环测试 — 需外接电机+编码器硬件，PID 未调试 */
-  // xTaskCreate(motor_test_task, "motor_test", 0x400, NULL, configMAX_PRIORITIES - 2, NULL);
+  xTaskCreate(motor_test_task, "motor_test", 0x400, NULL, configMAX_PRIORITIES - 2, NULL);
 
   /* CAN 总线 — 按需开关 */
   // xTaskCreate(can_send_test_task, "can_send", 0x200, NULL, configMAX_PRIORITIES - 2, NULL);

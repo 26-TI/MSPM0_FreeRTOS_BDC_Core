@@ -6,43 +6,26 @@
  */
 
 #include "test.hpp"
-#include "bsp_cfg.hpp"
 #include "device_cfg.hpp"
 
 #include "task.h"
 
-static constexpr uint32_t CH_A     = 2500;
-static constexpr uint32_t CH_B     = 1300;  ///< <2500=正转
-static constexpr TickType_t PRINT_MS = 500;
 
 void motor_test_task(void *arg)
 {
   (void)arg;
 
-  bsp_uart4.uart_printf("\r\nMOTOR\r\n");
+  motor_left.set_speed(2);
+  motor_right.set_speed(-2);
 
-  motor_left.enable();
-  motor_right.enable();
-
-  motor_left.set_duty(CH_A, CH_B);
-  motor_right.set_duty(CH_A, CH_B);
-
-  TickType_t last_pr = xTaskGetTickCount();
+  motor_left.speed_control_enable();
+  motor_right.speed_control_enable();
 
   while (1)
   {
     motor_left.update();
     motor_right.update();
 
-    if ((xTaskGetTickCount() - last_pr) >= pdMS_TO_TICKS(PRINT_MS))
-    {
-      const Motor::State &L = motor_left.get_state();
-      const Motor::State &R = motor_right.get_state();
-      bsp_uart4.uart_printf("L%.4f R%.4f\r\n",
-       (double)L.current_speed_rpm, (double)R.current_speed_rpm);
-      last_pr = xTaskGetTickCount();
-    }
-
-    vTaskDelay(pdMS_TO_TICKS(5));
+    vTaskDelay(pdMS_TO_TICKS(2));
   }
 }

@@ -1,10 +1,5 @@
 #include "pid.hpp"
 
-PID::PID(float p, float i, float d, float t, float out_max, float i_max, uint8_t i_epsilon_enable)
-{
-  init(p, i, d, t, out_max, i_max, i_epsilon_enable);
-}
-
 void PID::init(float p, float i, float d, float t, float out_max, float i_max, uint8_t i_epsilon_enable)
 {
   Kp_               = p;
