@@ -68,7 +68,6 @@ public:
 
   void  enable();
   void  disable();
-  bool  is_enabled() const { return _enabled; }
   const State &get_state() const { return _state; }
 
 private:
@@ -78,8 +77,6 @@ private:
   Config   _cfg{};
   State    _state{};
   float    _pulses_per_rev; ///< 每转脉冲数 = encoder_lines * 4 * gear_ratio
-  uint16_t _last_count;
-  bool     _enabled;
   uint32_t _duty_a, _duty_b;
 };
 
