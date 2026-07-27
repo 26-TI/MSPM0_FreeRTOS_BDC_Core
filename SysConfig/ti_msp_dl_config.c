@@ -42,6 +42,7 @@
 
 DL_TimerA_backupConfig gPWMA0Backup;
 DL_TimerG_backupConfig gQEI1Backup;
+DL_TimerA_backupConfig gpid_2ms_loopBackup;
 DL_UART_Main_backupConfig gUART3Backup;
 DL_MCAN_backupConfig gMCAN0Backup;
 
@@ -58,6 +59,7 @@ SYSCONFIG_WEAK void SYSCFG_DL_init(void)
     SYSCFG_DL_PWMA0_init();
     SYSCFG_DL_QEI0_init();
     SYSCFG_DL_QEI1_init();
+    SYSCFG_DL_pid_2ms_loop_init();
     SYSCFG_DL_I2C1_init();
     SYSCFG_DL_I2C2_init();
     SYSCFG_DL_UART0_init();
@@ -69,6 +71,7 @@ SYSCONFIG_WEAK void SYSCFG_DL_init(void)
     /* Ensure backup structures have no valid state */
 	gPWMA0Backup.backupRdy 	= false;
 	gQEI1Backup.backupRdy 	= false;
+	gpid_2ms_loopBackup.backupRdy 	= false;
 	gUART3Backup.backupRdy 	= false;
 	gMCAN0Backup.backupRdy 	= false;
 
@@ -83,6 +86,7 @@ SYSCONFIG_WEAK bool SYSCFG_DL_saveConfiguration(void)
 
 	retStatus &= DL_TimerA_saveConfiguration(PWMA0_INST, &gPWMA0Backup);
 	retStatus &= DL_TimerG_saveConfiguration(QEI1_INST, &gQEI1Backup);
+	retStatus &= DL_TimerA_saveConfiguration(pid_2ms_loop_INST, &gpid_2ms_loopBackup);
 	retStatus &= DL_UART_Main_saveConfiguration(UART3_INST, &gUART3Backup);
 	retStatus &= DL_MCAN_saveConfiguration(MCAN0_INST, &gMCAN0Backup);
 
@@ -96,6 +100,7 @@ SYSCONFIG_WEAK bool SYSCFG_DL_restoreConfiguration(void)
 
 	retStatus &= DL_TimerA_restoreConfiguration(PWMA0_INST, &gPWMA0Backup, false);
 	retStatus &= DL_TimerG_restoreConfiguration(QEI1_INST, &gQEI1Backup, false);
+	retStatus &= DL_TimerA_restoreConfiguration(pid_2ms_loop_INST, &gpid_2ms_loopBackup, false);
 	retStatus &= DL_UART_Main_restoreConfiguration(UART3_INST, &gUART3Backup);
 	retStatus &= DL_MCAN_restoreConfiguration(MCAN0_INST, &gMCAN0Backup);
 
@@ -109,6 +114,7 @@ SYSCONFIG_WEAK void SYSCFG_DL_initPower(void)
     DL_TimerA_reset(PWMA0_INST);
     DL_TimerG_reset(QEI0_INST);
     DL_TimerG_reset(QEI1_INST);
+    DL_TimerA_reset(pid_2ms_loop_INST);
     DL_I2C_reset(I2C1_INST);
     DL_I2C_reset(I2C2_INST);
     DL_UART_Main_reset(UART0_INST);
@@ -123,6 +129,7 @@ SYSCONFIG_WEAK void SYSCFG_DL_initPower(void)
     DL_TimerA_enablePower(PWMA0_INST);
     DL_TimerG_enablePower(QEI0_INST);
     DL_TimerG_enablePower(QEI1_INST);
+    DL_TimerA_enablePower(pid_2ms_loop_INST);
     DL_I2C_enablePower(I2C1_INST);
     DL_I2C_enablePower(I2C2_INST);
     DL_UART_Main_enablePower(UART0_INST);
@@ -450,6 +457,46 @@ SYSCONFIG_WEAK void SYSCFG_DL_QEI1_init(void) {
     DL_TimerG_setLoadValue(QEI1_INST, 65535);
     DL_TimerG_enableClock(QEI1_INST);
     DL_TimerG_startCounter(QEI1_INST);
+}
+
+
+
+/*
+ * Timer clock configuration to be sourced by BUSCLK /  (20000000 Hz)
+ * timerClkFreq = (timerClkSrc / (timerClkDivRatio * (timerClkPrescale + 1)))
+ *   20000000 Hz = 20000000 Hz / (4 * (0 + 1))
+ */
+static const DL_TimerA_ClockConfig gpid_2ms_loopClockConfig = {
+    .clockSel    = DL_TIMER_CLOCK_BUSCLK,
+    .divideRatio = DL_TIMER_CLOCK_DIVIDE_4,
+    .prescale    = 0U,
+};
+
+/*
+ * Timer load value (where the counter starts from) is calculated as (timerPeriod * timerClockFreq) - 1
+ * pid_2ms_loop_INST_LOAD_VALUE = (0.002 * 20000000 Hz) - 1
+ */
+static const DL_TimerA_TimerConfig gpid_2ms_loopTimerConfig = {
+    .period     = pid_2ms_loop_INST_LOAD_VALUE,
+    .timerMode  = DL_TIMER_TIMER_MODE_PERIODIC_UP,
+    .startTimer = DL_TIMER_STOP,
+};
+
+SYSCONFIG_WEAK void SYSCFG_DL_pid_2ms_loop_init(void) {
+
+    DL_TimerA_setClockConfig(pid_2ms_loop_INST,
+        (DL_TimerA_ClockConfig *) &gpid_2ms_loopClockConfig);
+
+    DL_TimerA_initTimerMode(pid_2ms_loop_INST,
+        (DL_TimerA_TimerConfig *) &gpid_2ms_loopTimerConfig);
+    DL_TimerA_enableInterrupt(pid_2ms_loop_INST , DL_TIMERA_INTERRUPT_ZERO_EVENT);
+	NVIC_SetPriority(pid_2ms_loop_INST_INT_IRQN, 0);
+    DL_TimerA_enableClock(pid_2ms_loop_INST);
+
+
+
+
+
 }
 
 

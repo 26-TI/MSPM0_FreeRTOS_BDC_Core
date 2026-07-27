@@ -23,8 +23,8 @@ void motor_task(void *arg)
 
   while (1)
   {
-    motor_left.update();
     motor_right.update();
+    motor_left.update();
     vTaskDelay(pdMS_TO_TICKS(2));
   }
 }

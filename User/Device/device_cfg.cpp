@@ -29,7 +29,11 @@ void device_init()
     .pwm_max           = 5000,       /* PWM 周期 */
   });
 
-  motor_left.PID_Init(1000, 25000, 0, 0.002, 2400, 1100, 0);
+  motor_left.PIDL_Init(1500, 40000,  0, 0.002, 2400, 1200, 0);
+  motor_left.PIDH_Init(1800, 140000, 0, 0.002, 2400, 1200, 1);
+  motor_left.Set_Pid_Change_Time(5);
+
+
 
   /* ---- 右轮电机 — PWM-G0 CH2(正转)/CH1(反转), QEI0, EN=PA16 ---- */
   motor_right.Motor_Init({
@@ -44,7 +48,9 @@ void device_init()
     .pwm_max           = 5000, /* PWM 周期 */
   });
 
-  motor_right.PID_Init(1000, 25000, 0, 0.002, 2400, 1100, 0);
+  motor_right.PIDL_Init(1500, 40000,  0, 0.002, 2400, 1200, 0);
+  motor_right.PIDH_Init(1800, 140000, 0, 0.002, 2400, 1200, 1);
+  motor_right.Set_Pid_Change_Time(5);
 
   /* 陀螺仪 — UART3 */
   ti_gyro.init(&bsp_uart3);

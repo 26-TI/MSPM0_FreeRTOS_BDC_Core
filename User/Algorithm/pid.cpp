@@ -65,3 +65,25 @@ void PID::clear()
   last_error_ = 0;
   sum_error_  = 0;
 }
+
+void PID::bumpless_switch_from(PID& from)
+{
+  // 传递微分历史，避免 (error - 0)/T 产生尖峰
+  last_error_ = from.last_error_;
+
+  // 保持积分贡献不变: Ki_from * sum_from = Ki_to * sum_to
+  if (Ki_ > 0.0f)
+  {
+    sum_error_ = from.Ki_ * from.sum_error_ / Ki_;
+
+    // 对目标 PID 做积分限幅
+    if (sum_error_ > I_MAX_)
+      sum_error_ = I_MAX_;
+    else if (sum_error_ < -I_MAX_)
+      sum_error_ = -I_MAX_;
+  }
+  else
+  {
+    sum_error_ = 0.0f;
+  }
+}

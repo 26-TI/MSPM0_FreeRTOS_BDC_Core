@@ -15,6 +15,9 @@ public:
   /// 清除历史误差（积分累加值+上次误差归零）
   void clear();
 
+  /// 积分切换时，将另一个 PID 的状态平滑转移到当前 PID
+  void bumpless_switch_from(PID& from);
+
 private:
   float   Kp_;
   float   Ki_;

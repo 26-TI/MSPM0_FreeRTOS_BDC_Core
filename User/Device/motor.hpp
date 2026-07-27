@@ -60,7 +60,10 @@ public:
   void Motor_Init(const Config &cfg);
 
   /// 初始化 PID 参数
-  void PID_Init(float p, float i, float d, float t, float out_max, float i_max, uint8_t i_epsilon_enable);
+  void PIDL_Init(float p, float i, float d, float t, float out_max, float i_max, uint8_t i_epsilon_enable);
+  void PIDH_Init(float p, float i, float d, float t, float out_max, float i_max, uint8_t i_epsilon_enable);
+  void Set_Pid_Change_Time(uint16_t cnt);//窗口时间 = cnt*控制周期
+
 
   void update();
   void enable();
@@ -69,19 +72,27 @@ public:
 
   void set_speed(float target);
 
+
   /* ── 调试接口 ── */
   float get_target()  const { return _state.target; }
   float get_speed()   const { return _state.speed; }
-  float get_pid_out() const { return _pid_out; }
 
 private:
   Config _cfg{};
   State  _state{};
 
-  PID _pid;
+  PID _pidl;
+  PID _pidh;
+  
+  uint16_t _pid_change_time = 0;
+  uint16_t _pid_change_cnt = 0;
+
+  uint8_t _pid_state = 1;  
+  float   _low_speed_threshold = 1.2f;
+  float   _high_speed_threshold = 0.8f;
 
   uint8_t _pid_enable = 0;
-  float   _pid_out    = 0; ///< 最近一次 PID 输出（调试用）
+
 };
 
 #endif

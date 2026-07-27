@@ -26,6 +26,8 @@ const QEI           = scripting.addModule("/ti/driverlib/QEI", {}, false);
 const QEI1          = QEI.addInstance();
 const QEI2          = QEI.addInstance();
 const SYSCTL        = scripting.addModule("/ti/driverlib/SYSCTL");
+const TIMER         = scripting.addModule("/ti/driverlib/TIMER", {}, false);
+const TIMER1        = TIMER.addInstance();
 const UART          = scripting.addModule("/ti/driverlib/UART", {}, false);
 const UART1         = UART.addInstance();
 const UART2         = UART.addInstance();
@@ -243,6 +245,13 @@ QEI2.ccp1PinConfig.$name                = "ti_driverlib_gpio_GPIOPinGeneric17";
 SYSCTL.forceDefaultClkConfig = true;
 SYSCTL.clockTreeEn           = true;
 
+TIMER1.$name             = "pid_2ms_loop";
+TIMER1.timerMode         = "PERIODIC_UP";
+TIMER1.timerPeriod       = "0.002";
+TIMER1.timerClkDiv       = 4;
+TIMER1.interrupts        = ["ZERO"];
+TIMER1.interruptPriority = "0";
+
 UART1.$name                             = "UART0";
 UART1.targetBaudRate                    = 115200;
 UART1.enableFIFO                        = true;
@@ -353,3 +362,4 @@ ProjectConfig.migrationCondition = true;
 pinFunction4.peripheral.$suggestSolution           = "SYSCTL";
 pinFunction4.peripheral.hfxInPin.$suggestSolution  = "PA5";
 pinFunction4.peripheral.hfxOutPin.$suggestSolution = "PA6";
+TIMER1.peripheral.$suggestSolution                 = "TIMA1";

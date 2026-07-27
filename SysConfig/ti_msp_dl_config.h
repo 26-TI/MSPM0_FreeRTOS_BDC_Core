@@ -153,6 +153,14 @@ bool SYSCFG_DL_SYSCTL_SYSPLL_init(void);
 #define GPIO_QEI1_PHB_IOMUX_FUNC                     IOMUX_PINCM24_PF_TIMG8_CCP1
 
 
+/* Defines for pid_2ms_loop */
+#define pid_2ms_loop_INST                                                (TIMA1)
+#define pid_2ms_loop_INST_IRQHandler                            TIMA1_IRQHandler
+#define pid_2ms_loop_INST_INT_IRQN                              (TIMA1_INT_IRQn)
+#define pid_2ms_loop_INST_LOAD_VALUE                                    (39999U)
+
+
+
 
 /* Defines for I2C1 */
 #define I2C1_INST                                                           I2C1
@@ -348,6 +356,7 @@ bool SYSCFG_DL_SYSCTL_SYSPLL_init(void);
 void SYSCFG_DL_PWMA0_init(void);
 void SYSCFG_DL_QEI0_init(void);
 void SYSCFG_DL_QEI1_init(void);
+void SYSCFG_DL_pid_2ms_loop_init(void);
 void SYSCFG_DL_I2C1_init(void);
 void SYSCFG_DL_I2C2_init(void);
 void SYSCFG_DL_UART0_init(void);
