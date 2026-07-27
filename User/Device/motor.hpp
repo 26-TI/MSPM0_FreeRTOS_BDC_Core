@@ -59,8 +59,8 @@ public:
 
   void Motor_Init(const Config &cfg);
 
-  void PIDL_Init(float p, float i, float d, float t, float out_max, float i_max, uint8_t i_epsilon_enable);
-  void PIDH_Init(float p, float i, float d, float t, float out_max, float i_max, uint8_t i_epsilon_enable);
+  /// 初始化 PID 参数
+  void PID_Init(float p, float i, float d, float t, float out_max, float i_max, uint8_t i_epsilon_enable);
 
   void update();
   void enable();
@@ -69,18 +69,19 @@ public:
 
   void set_speed(float target);
 
+  /* ── 调试接口 ── */
+  float get_target()  const { return _state.target; }
+  float get_speed()   const { return _state.speed; }
+  float get_pid_out() const { return _pid_out; }
+
 private:
   Config _cfg{};
   State  _state{};
 
-  PID _pidl;
-  PID _pidh;
+  PID _pid;
 
-  float _speed_l = 0.8;
-  float _speed_h = 1.2;
-
-  uint8_t _speed_statue = 0;
-  uint8_t _pid_enable   = 0;
+  uint8_t _pid_enable = 0;
+  float   _pid_out    = 0; ///< 最近一次 PID 输出（调试用）
 };
 
 #endif

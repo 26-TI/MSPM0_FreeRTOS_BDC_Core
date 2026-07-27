@@ -10,6 +10,10 @@
  *   - gpio_test_task          GPIO/按键测试（LED 闪烁 + 按键消抖打印）
  *   - proto_send_test_task    串口协议发送测试
  *   - motor_test_task         双电机开环控制测试
+ *   - gyro_recv_test_task     陀螺仪原始数据接收 (UART3→UART4 HEX dump)
+ *   - uart4_recv_test_task    UART4 串口监视回显
+ *   - track_test_task         巡线传感器读取 (10ms, PCA9555)
+ *   - oled_test_task          OLED 屏幕显示 (巡线+陀螺仪)
  *
  * 使用方式:
  * @code
@@ -94,6 +98,50 @@ extern "C"
   void proto_send_test_task(void *arg);
 
   void motor_test_task(void *arg);
+
+  /**
+   * @brief 陀螺仪原始数据接收测试
+   *
+   * 从 UART3 (bsp_uart3) 接收原始字节流，HEX dump 到 UART4。
+   * 用于调试陀螺仪协议帧格式和校验。
+   *
+   * @param arg FreeRTOS 任务参数（未使用）
+   */
+  void gyro_recv_test_task(void *arg);
+
+  /**
+   * @brief UART4 串口监视/回显测试
+   *
+   * 监听 UART4 (bsp_uart4)，收到任意数据即原样回显。
+   * 可用于串口指令调试或数据透传。
+   *
+   * @param arg FreeRTOS 任务参数（未使用）
+   */
+  void uart4_recv_test_task(void *arg);
+
+  /**
+   * @brief 巡线传感器读取任务
+   *
+   * 每 10ms 读取 PCA9555 巡线模块，结果存入 g_track_data。
+   *
+   * @param arg FreeRTOS 任务参数（未使用）
+   */
+  void track_test_task(void *arg);
+
+  /**
+   * @brief OLED 屏幕显示任务
+   *
+   * 每 200ms 刷新 OLED，显示巡线数据 + 陀螺仪姿态 (Yaw/Pitch/Roll)。
+   * 无有效陀螺仪数据时显示 "--.--"。
+   *
+   * @param arg FreeRTOS 任务参数（未使用）
+   */
+  void oled_test_task(void *arg);
+
+  /* ==================== 任务间共享变量 ==================== */
+
+  /** @brief 巡线传感器最新读数 (12 位有效, 由 track_test_task 更新) */
+  extern volatile uint16_t g_track_data;
 
 #ifdef __cplusplus
 }

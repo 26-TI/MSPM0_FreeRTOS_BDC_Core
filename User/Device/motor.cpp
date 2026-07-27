@@ -11,13 +11,9 @@ void Motor::Motor_Init(const Config &cfg)
 }
 
 
-void Motor::PIDL_Init(float p, float i, float d, float t, float out_max, float i_max, uint8_t i_epsilon_enable)
+void Motor::PID_Init(float p, float i, float d, float t, float out_max, float i_max, uint8_t i_epsilon_enable)
 {
-  _pidl.init(p, i, d, t, out_max, i_max, i_epsilon_enable);
-}
-void Motor::PIDH_Init(float p, float i, float d, float t, float out_max, float i_max, uint8_t i_epsilon_enable)
-{
-  _pidh.init(p, i, d, t, out_max, i_max, i_epsilon_enable);
+  _pid.init(p, i, d, t, out_max, i_max, i_epsilon_enable);
 }
 
 void Motor::update()
@@ -27,16 +23,14 @@ void Motor::update()
   _state.speed = (_cfg.qei->get_count() - 32767.0f) * (1000.0f / _cfg.control_period_ms) / (_cfg.encoder_lines * 4 * _cfg.gear_ratio);
   _cfg.qei->set_count(32767);
 
-  if (_speed_statue == 0 && (_state.speed > _speed_h || _state.speed < -_speed_h)) _speed_statue = 1;
-  if (_speed_statue == 1 && (_state.speed > -_speed_l && _state.speed < _speed_l)) _speed_statue = 0;
-
   if (_pid_enable == 1)
   {
-    if (_speed_statue == 0) pid_out = _pidl.calc(_state.target, _state.speed);
-    if (_speed_statue == 1) pid_out = _pidh.calc(_state.target, _state.speed);
+    pid_out = _pid.calc(_state.target, _state.speed);
 
     _cfg.pwm->set_duty(_cfg.pwm_ch_b, 2500 + pid_out);
   }
+
+  _pid_out = pid_out;
 }
 
 

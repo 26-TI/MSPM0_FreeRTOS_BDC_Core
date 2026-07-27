@@ -36,6 +36,8 @@
 #define __BSP_KEY_MSPM0_HPP__
 
 #include "ti_msp_dl_config.h" // IWYU pragma: keep
+#include "FreeRTOS.h"         // IWYU pragma: keep
+#include "semphr.h"
 
 class BspKey
 {
@@ -96,6 +98,9 @@ public:
    */
   Event poll();
 
+  /** @brief 获取按键信号量句柄（供外部任务阻塞等待按键事件） */
+  SemaphoreHandle_t get_sem() const { return _sem; }
+
 private:
   GPIO_Regs *_port           = nullptr; ///< GPIO 端口指针
   uint32_t   _pin            = 0U;      ///< 引脚掩码
@@ -107,6 +112,8 @@ private:
   uint8_t  _cnt         = 0U;    ///< 当前连续不一致计数
   uint16_t _hold_cnt    = 0U;    ///< 按下保持计数
   bool     _long_fired  = false; ///< 本次按下周期内长按是否已触发
+
+  SemaphoreHandle_t _sem = nullptr; ///< 按键计数信号量（松开时 give: 短按=1, 长按=2）
 };
 
 #endif /* __BSP_KEY_MSPM0_HPP__ */

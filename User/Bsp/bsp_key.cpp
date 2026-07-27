@@ -50,6 +50,12 @@ void BspKey::init(const Config &cfg)
   /* 以当前电平作为初始稳定状态 */
   bool raw     = (DL_GPIO_readPins(_port, _pin) != 0U);
   _last_stable = _active_low ? !raw : raw;
+
+  /* 创建按键计数信号量（最大计数 2: 短按=1, 长按=2） */
+  if (!_sem)
+  {
+    _sem = xSemaphoreCreateCounting(2, 0);
+  }
 }
 
 /* ================================================================
@@ -72,6 +78,8 @@ BspKey::Event BspKey::poll()
   bool raw    = (DL_GPIO_readPins(_port, _pin) != 0U);
   bool active = _active_low ? !raw : raw; /* true = 按键按下 */
 
+  Event result = NONE;
+
   /* ---- 阶段一: 电平与上次一致 → 稳定 ---- */
   if (active == _last_stable)
   {
@@ -82,37 +90,43 @@ BspKey::Event BspKey::poll()
       if (!_long_fired && _hold_cnt >= _long_press_cnt)
       {
         _long_fired = true; /* 标记已触发，本次按下不再重复 */
-        return LONG_PRESS;
+        result = LONG_PRESS;
       }
     }
-    return NONE;
   }
-
   /* ---- 阶段二: 电平与上次不同 → 可能是抖动 ---- */
-  _cnt++;
-  if (_cnt < _debounce_cnt)
+  else
   {
-    return NONE; /* 消抖未完成，继续等待 */
+    _cnt++;
+    if (_cnt >= _debounce_cnt)
+    {
+      /* ---- 阶段三: 消抖确认，状态切换 ---- */
+      _cnt = 0U;
+
+      if (active && !_last_stable)
+      {
+        /* 确认按下 */
+        _last_stable = true;
+        _hold_cnt    = 0U;
+        _long_fired  = false;
+        result = PRESSED;
+      }
+      else if (!active && _last_stable)
+      {
+        /* 确认释放 → 根据是否长按过给出不同计数值 */
+        _last_stable = false;
+        _hold_cnt    = 0U;
+        result = RELEASED;
+
+        if (_sem)
+        {
+          BaseType_t count = _long_fired ? 2 : 1;
+          for (BaseType_t i = 0; i < count; i++)
+            xSemaphoreGive(_sem);
+        }
+      }
+    }
   }
 
-  /* ---- 阶段三: 消抖确认，状态切换 ---- */
-  _cnt = 0U;
-
-  if (active && !_last_stable)
-  {
-    /* 确认按下 */
-    _last_stable = true;
-    _hold_cnt    = 0U;
-    _long_fired  = false;
-    return PRESSED;
-  }
-  else if (!active && _last_stable)
-  {
-    /* 确认释放 */
-    _last_stable = false;
-    _hold_cnt    = 0U;
-    return RELEASED;
-  }
-
-  return NONE;
+  return result;
 }

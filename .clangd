@@ -17,3 +17,4 @@ Diagnostics:
     # - unused-includes       # too aggressive, generates many spurious warnings.
     - pp_file_not_found     # mitigate Eclipse/clangd limitation, don't report spurious errors
     # - -Wimplicit-function-declaration
+    - strict-prototypes       # FreeRTOS 旧式声明

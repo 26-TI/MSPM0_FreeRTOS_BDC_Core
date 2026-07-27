@@ -7,8 +7,11 @@
 #include "bsp_cfg.hpp"
 
 /* ==================== 全局实例 ==================== */
-Motor motor_left;
-Motor motor_right;
+TiGyro   ti_gyro;
+Motor    motor_left;
+Motor    motor_right;
+IicOled  iic_oled;
+IicTrack iic_track;
 
 /* ==================== 设备初始化 ==================== */
 void device_init()
@@ -26,8 +29,7 @@ void device_init()
     .pwm_max           = 5000,       /* PWM 周期 */
   });
 
-  motor_left.PIDH_Init(1500, 40000, 0, 0.002, 2400, 1100, 1);
-  motor_left.PIDL_Init(2500, 140000, 0, 0.002, 2400, 1100, 0);
+  motor_left.PID_Init(1000, 25000, 0, 0.002, 2400, 1100, 0);
 
   /* ---- 右轮电机 — PWM-G0 CH2(正转)/CH1(反转), QEI0, EN=PA16 ---- */
   motor_right.Motor_Init({
@@ -38,13 +40,18 @@ void device_init()
     .pwm_ch_b          = 1,          /* CH1: PA0 */
     .encoder_lines     = 500,
     .gear_ratio        = 28.0f,
-    .control_period_ms = 2,
+    .control_period_ms = 2, /* 2ms 控制周期 */
     .pwm_max           = 5000, /* PWM 周期 */
   });
 
-  motor_right.PIDH_Init(1500, 40000, 0, 0.002, 2400, 1100, 1);
-  motor_right.PIDL_Init(2500, 140000, 0, 0.002, 2400, 1100, 0);
+  motor_right.PID_Init(1000, 25000, 0, 0.002, 2400, 1100, 0);
+
+  /* 陀螺仪 — UART3 */
+  ti_gyro.init(&bsp_uart3);
+
+  /* OLED — I2C2, 地址 0x3C */
+  iic_oled.init(&bsp_i2c2, 0x3C);
 
   /* Track (PCA9555 巡线) — I2C1, 地址 0x20 */
-  // iic_track.init(&bsp_i2c1, 0x20);
+  iic_track.init(&bsp_i2c1, 0x20);
 }

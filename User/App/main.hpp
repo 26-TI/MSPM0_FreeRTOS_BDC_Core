@@ -18,5 +18,6 @@
 #include "protocol_cfg.hpp" // IWYU pragma: keep
 #include "device_cfg.hpp"   // IWYU pragma: keep
 #include "test.hpp"         // IWYU pragma: keep
+#include "task.hpp"         // IWYU pragma: keep
 
 #endif /* __MAIN_HPP__ */

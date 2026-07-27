@@ -32,6 +32,9 @@ BspKey  key_1;
 BspKey  key_2;
 BspKey  key_3;
 
+BspI2c bsp_i2c1;
+BspI2c bsp_i2c2;
+
 /* ==================== BSP 初始化 ==================== */
 
 /**
@@ -83,4 +86,8 @@ void bsp_init()
   key_1.init({GPIOB, KEY_PIN_KEY1_PIN, true, 2U, 20U}); /* PB8  */
   key_2.init({GPIOA, KEY_PIN_KEY2_PIN, true, 2U, 20U}); /* PA8  */
   key_3.init({GPIOA, KEY_PIN_KEY3_PIN, true, 2U, 20U}); /* PA31 */
+
+  /* ---- I2C — 400kHz ---- */
+  bsp_i2c1.init({I2C1_INST}); /* I2C1 (PB2/PB3), 巡线模块 PCA9555 */
+  bsp_i2c2.init({I2C2_INST}); /* I2C2 (PA24/PA25), OLED SSD1306 */
 }

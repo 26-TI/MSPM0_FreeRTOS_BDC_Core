@@ -29,6 +29,7 @@ include_directories(
     ./FreeRTOS/include
     ./FreeRTOS/portable/GCC/ARM_CM0/
     ./User/App
+    ./User/App/task
     ./User/Bsp
     ./User/Device
     ./User/Service
