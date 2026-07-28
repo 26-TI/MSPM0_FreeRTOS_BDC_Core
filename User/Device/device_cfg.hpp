@@ -10,6 +10,7 @@
 #include "motor.hpp"
 #include "iic_oled.hpp"
 #include "iic_track.hpp"
+#include "ins.hpp"
 
 /* ==================== 函数声明 ==================== */
 void device_init();
@@ -20,5 +21,6 @@ extern Motor    motor_left;  ///< 左轮电机 (PWM-G0 CH0/CH1, QEI0)
 extern Motor    motor_right; ///< 右轮电机 (PWM-G0 CH2/CH3, QEI1)
 extern IicOled  iic_oled;    ///< OLED SSD1306 (I2C2, 0x3C)
 extern IicTrack iic_track;   ///< 巡线 PCA9555 (I2C1, 0x20)
+extern INS      ins;         ///< 惯性导航角度闭环
 
 #endif // __DEVICE_CFG_HPP__

@@ -133,6 +133,38 @@ extern "C"
    */
   void line_off_task(void *arg);
 
+  /**
+   * @brief 角度闭环控制任务
+   *
+   * 每 10ms 调用 ins.update() 执行角度闭环差速控制。
+   * 依赖 ins / ti_gyro / motor_left / motor_right。
+   * 优先级 6。
+   *
+   * @param arg FreeRTOS 任务参数（未使用）
+   */
+  void angle_task(void *arg);
+
+  /**
+   * @brief 角度闭环测试任务
+   *
+   * 每 5s 轮转目标角度 (0°→90°→180°→270°→0°)，串口打印状态。
+   * 优先级 4。
+   *
+   * @param arg FreeRTOS 任务参数（未使用）
+   */
+  void angle_test_task(void *arg);
+
+  /**
+   * @brief OLED 菜单任务
+   *
+   * 每 50ms 消费按键信号量 → 状态机 → OLED 渲染。
+   * 3键导航: key1=UP, key2=DOWN, key3短=ENTER, key3长=HOME。
+   * 优先级 3，独占 OLED。
+   *
+   * @param arg FreeRTOS 任务参数（未使用）
+   */
+  void menu_task(void *arg);
+
   /* ===================================================================
    * 任务间共享变量
    * =================================================================== */

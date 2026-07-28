@@ -46,34 +46,51 @@ int main(void)
 
   /* 脱线检测信号量: line_task 给出, line_off_task 接收 */
   g_line_off_sem = xSemaphoreCreateBinary();
-  bool g_ok = false;
   /* -------- 创建 FreeRTOS 任务 -------- */
 
+  /* -------- 高频传感器 / 实时性高 任务 -------- */
+
+
   /* 巡线传感器读取处理 (PCA9555, I2C1) */
-  g_ok = xTaskCreate(track_task, "track", 0x30, NULL, 7, NULL);
+  xTaskCreate(track_task, "track", 0x100, NULL, 7, NULL);
 
   /* 电机控制更新 (10ms) */
-  g_ok = xTaskCreate(motor_task, "motor", 0x200, NULL, 7, NULL);
+  xTaskCreate(motor_task, "motor", 0x200, NULL, 7, NULL);
 
-  /* 脱线处理 (永久阻塞等待信号量) */
-  g_ok = xTaskCreate(line_off_task, "line_off", 0x100, NULL, 6, NULL);
+  /* -------- 控制任务 -------- */
 
   /* 循线控制 (10ms) */
-  g_ok = xTaskCreate(line_task, "line", 0x100, NULL, 6, NULL);
+  // xTaskCreate(line_task, "line", 0x200, NULL, 6, NULL);
+
+  /* 脱线处理 (永久阻塞等待信号量) */
+  // xTaskCreate(line_off_task, "line_off", 0x200, NULL, 6, NULL);
+  
+  /* 角度闭环控制 (10ms, 优先级 6) */
+  xTaskCreate(angle_task, "angle", 0x200, NULL, 6, NULL);
+
+  /* -------- 不重要但需要定期运行的任务的任务 -------- */
 
   /* 电机数据打印 (10ms) */
-  g_ok = xTaskCreate(motor_print_task, "motor_prt", 0x100, NULL, 5, NULL);
+  xTaskCreate(motor_print_task, "motor_prt", 0x100, NULL, 5, NULL);
 
   /* GPIO / 按键处理 — 必开 */
-  g_ok = xTaskCreate(gpio_task, "gpio", 0x30, NULL, 4, NULL);
+  xTaskCreate(gpio_task, "gpio", 0x100, NULL, 4, NULL);
 
   /* 陀螺仪接收处理 (UART3) */
-  g_ok = xTaskCreate(gyro_task, "gyro", 0x50, NULL, 4, NULL);
+  xTaskCreate(gyro_task, "gyro", 0x100, NULL, 4, NULL);
 
-  /* OLED 显示 (200ms, 优先级 5) */
-  g_ok = xTaskCreate(oled_task, "oled", 0x100, NULL, 3, NULL);
+  /* OLED 菜单 (50ms, 优先级 3) — 与 oled_task 二选一 */
+  xTaskCreate(menu_task, "menu", 0x200, NULL, 3, NULL);
+  /* OLED 数据显示 (200ms, 优先级 3) — 与 menu_task 二选一 */
+  // xTaskCreate(oled_task, "oled", 0x100, NULL, 3, NULL);
+
+  /* CPU 空闲率监控 (500ms, 优先级 1, 仅高于空闲任务) */
+  xTaskCreate(cpu_monitor_task, "cpu_mon", 0x100, NULL, 2, NULL);
 
   /* -------- FreeRTOS 测试任务 -------- */
+
+  /* 角度闭环测试 — 目标角度轮转 + 串口打印 (5s 周期) */
+  // xTaskCreate(angle_test_task, "angle_tst", 0x200, NULL, 4, NULL);
 
   /* 双电机测试波形 — 正弦/方波/恒速（与 motor_task 二选一） */
   // g_ok = xTaskCreate(motor_test_task, "motor_tst", 0x400, NULL, 6, NULL);

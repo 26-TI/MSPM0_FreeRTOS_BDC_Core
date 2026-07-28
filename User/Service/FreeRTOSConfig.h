@@ -161,7 +161,7 @@
 /* 空闲任务钩子 */
 #define configUSE_IDLE_HOOK 0
 /* 节拍中断钩子 */
-#define configUSE_TICK_HOOK 0
+#define configUSE_TICK_HOOK 1
 /* 内存分配失败钩子 */
 #define configUSE_MALLOC_FAILED_HOOK 0
 /* 定时器服务任务启动钩子 */
@@ -178,13 +178,18 @@
 /******************************************************************************/
 
 /* 1=收集任务运行时间统计 (需提供时钟源和 portCONFIGURE_TIMER / portGET_RUN_TIME_COUNTER_VALUE 宏) */
-#define configGENERATE_RUN_TIME_STATS 0
+#define configGENERATE_RUN_TIME_STATS 1
 
 /* 1=在 TCB 中包含额外的追踪/可视化信息 (vTaskGetRunTimeStats 依赖) */
-#define configUSE_TRACE_FACILITY 0
+#define configUSE_TRACE_FACILITY 1
 
 /* 1=启用 vTaskList / vTaskGetRunTimeStats (依赖字符串格式化函数) */
-#define configUSE_STATS_FORMATTING_FUNCTIONS 0
+#define configUSE_STATS_FORMATTING_FUNCTIONS 1
+
+/* ── 运行时间计数器（tick-hook 驱动，1 tick = 1000 单位，与 tick 同步）── */
+extern volatile unsigned long CPU_RunTime;
+#define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS() (CPU_RunTime = 0UL)
+#define portGET_RUN_TIME_COUNTER_VALUE()          CPU_RunTime
 
 /******************************************************************************/
 /* 协程配置 */

@@ -54,9 +54,10 @@ void motor_print_task(void *arg)
     //   (double)motor_right.get_pid_out());
 
     bsp_uart4.uart_printf(
-      "%.2f,%.2f\n",
-      (double)motor_left.get_target(),
-      (double)motor_right.get_target());
+      "%.2f,%.2f,%.2f\r\n",
+      (double)ins.target(),
+      (double)ins.current_yaw(),
+      (double)ins.correction());
 
     vTaskDelay(pdMS_TO_TICKS(10));
   }

@@ -12,6 +12,7 @@ Motor    motor_left;
 Motor    motor_right;
 IicOled  iic_oled;
 IicTrack iic_track;
+INS      ins;
 
 /* ==================== 设备初始化 ==================== */
 void device_init()
@@ -54,4 +55,9 @@ void device_init()
 
   /* Track (PCA9555 巡线) — I2C1, 地址 0x20 */
   iic_track.init(&bsp_i2c1, 0x20);
+
+  /* INS 角度闭环 — 陀螺仪 + 双电机 */
+  ins.init(&ti_gyro, &motor_left, &motor_right);
+  ins._pid.init(0.05, 0.0, 0.0, 0.01, 1.0, 1, 1);
+
 }
