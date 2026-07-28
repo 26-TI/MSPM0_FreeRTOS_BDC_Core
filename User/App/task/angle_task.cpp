@@ -26,6 +26,7 @@ void angle_task(void *arg)
   (void)arg;
 
   ins.enable();
+  ins.set_target(90.0f);
 
   while (1)
   {

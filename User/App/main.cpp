@@ -52,7 +52,7 @@ void init_task(void *arg)
   xTaskCreate(motor_task, "motor", 0x200, NULL, 7, NULL);
 
   /* 控制任务 */
-  // xTaskCreate(angle_task, "angle", 0x200, NULL, 6, NULL);
+  xTaskCreate(angle_task, "angle", 0x200, NULL, 6, NULL);
 
   // xTaskCreate(line_task, "line", 0x200, NULL, 6, NULL);
   // xTaskCreate(line_off_task, "line_off", 0x200, NULL, 6, NULL);
