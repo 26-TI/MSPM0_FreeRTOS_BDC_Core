@@ -161,7 +161,7 @@
 /* 空闲任务钩子 */
 #define configUSE_IDLE_HOOK 0
 /* 节拍中断钩子 */
-#define configUSE_TICK_HOOK 1
+#define configUSE_TICK_HOOK 0
 /* 内存分配失败钩子 */
 #define configUSE_MALLOC_FAILED_HOOK 0
 /* 定时器服务任务启动钩子 */
@@ -178,19 +178,13 @@
 /******************************************************************************/
 
 /* 1=收集任务运行时间统计 (需提供时钟源和 portCONFIGURE_TIMER / portGET_RUN_TIME_COUNTER_VALUE 宏) */
-#define configGENERATE_RUN_TIME_STATS 1
+#define configGENERATE_RUN_TIME_STATS 0
 
 /* 1=在 TCB 中包含额外的追踪/可视化信息 (vTaskGetRunTimeStats 依赖) */
-#define configUSE_TRACE_FACILITY 1
+#define configUSE_TRACE_FACILITY 0
 
 /* 1=启用 vTaskList / vTaskGetRunTimeStats (依赖字符串格式化函数) */
-#define configUSE_STATS_FORMATTING_FUNCTIONS 1
-
-/* ── 运行时间计数器（基于 tick hook，tick=1000Hz 时等效 ~1MHz 分辨率）── */
-extern volatile unsigned long CPU_RunTime;
-
-#define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS()  (CPU_RunTime = 0ul)
-#define portGET_RUN_TIME_COUNTER_VALUE()           CPU_RunTime
+#define configUSE_STATS_FORMATTING_FUNCTIONS 0
 
 /******************************************************************************/
 /* 协程配置 */
@@ -350,7 +344,7 @@ extern volatile unsigned long CPU_RunTime;
 /* uxTaskGetStackHighWaterMark - 获取栈高水位 */
 #define INCLUDE_uxTaskGetStackHighWaterMark 0
 /* xTaskGetIdleTaskHandle - 获取空闲任务句柄 */
-#define INCLUDE_xTaskGetIdleTaskHandle 1
+#define INCLUDE_xTaskGetIdleTaskHandle 0
 /* eTaskGetState - 获取任务状态 */
 #define INCLUDE_eTaskGetState 0
 /* xEventGroupSetBitFromISR - 从中断设置事件位 */

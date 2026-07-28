@@ -1,6 +1,6 @@
 /**
  * @file motor_task.cpp
- * @brief 电机控制更新任务 (2ms) + 电机数据打印任务 (50ms)
+ * @brief 电机控制更新任务 (5ms) + 电机数据打印任务 (50ms)
  */
 
 #include "task.hpp"
@@ -11,7 +11,7 @@
 #include "task.h"
 
 /* ===================================================================
- * 电机控制更新任务 (2ms, 优先级 6) — 仅 update, 不设速度不打印
+ * 电机控制更新任务 (5ms, 优先级 5) — 仅 update, 不设速度不打印
  * =================================================================== */
 
 void motor_task(void *arg)
@@ -25,7 +25,7 @@ void motor_task(void *arg)
   {
     motor_left.update();
     motor_right.update();
-    vTaskDelay(pdMS_TO_TICKS(2));
+    vTaskDelay(pdMS_TO_TICKS(5));
   }
 }
 
@@ -58,6 +58,6 @@ void motor_print_task(void *arg)
       (double)motor_left.get_target(),
       (double)motor_right.get_target());
 
-    vTaskDelay(pdMS_TO_TICKS(2));
+    vTaskDelay(pdMS_TO_TICKS(5));
   }
 }

@@ -18,11 +18,9 @@
 
 void track_task(void *arg)
 {
-  (void)arg;
-
   while (1)
   {
     g_track_data = iic_track.read();
-    vTaskDelay(pdMS_TO_TICKS(1));
+    vTaskDelay(pdMS_TO_TICKS(5));
   }
 }
