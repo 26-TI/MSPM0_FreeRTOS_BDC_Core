@@ -25,7 +25,7 @@ void device_init()
     .pwm_ch_b          = 0,          /* CH3: PA28 */
     .encoder_lines     = 500,        /* 编码器线数 */
     .gear_ratio        = 28.0f,      /* 减速比 28:1 */
-    .control_period_ms = 10,          /* 10ms 控制周期 */
+    .control_period_ms = 10,         /* 10ms 控制周期 */
     .pwm_max           = 5000,       /* PWM 周期 */
   });
 
@@ -40,7 +40,7 @@ void device_init()
     .pwm_ch_b          = 1,          /* CH1: PA0 */
     .encoder_lines     = 500,
     .gear_ratio        = 28.0f,
-    .control_period_ms = 10, /* 10ms 控制周期 */
+    .control_period_ms = 10,   /* 10ms 控制周期 */
     .pwm_max           = 5000, /* PWM 周期 */
   });
 

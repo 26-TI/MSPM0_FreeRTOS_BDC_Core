@@ -19,6 +19,9 @@
 
 #include <stdint.h>
 
+#include "FreeRTOS.h"
+#include "semphr.h"
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -118,6 +121,24 @@ extern "C"
    * @param arg FreeRTOS 任务参数（未使用）
    */
   void cpu_monitor_task(void *arg);
+
+  /**
+   * @brief 脱线处理任务
+   *
+   * 永久阻塞等待 g_line_off_sem 信号量。
+   * 收到信号量后执行脱线保护动作（停车等）。
+   * 优先级 6。
+   *
+   * @param arg FreeRTOS 任务参数（未使用）
+   */
+  void line_off_task(void *arg);
+
+  /* ===================================================================
+   * 任务间共享变量
+   * =================================================================== */
+
+  /** @brief 脱线检测信号量（line_task 给出, line_off_task 接收） */
+  extern SemaphoreHandle_t g_line_off_sem;
 
 #ifdef __cplusplus
 }

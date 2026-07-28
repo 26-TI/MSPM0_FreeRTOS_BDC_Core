@@ -36,7 +36,7 @@
 #define configUSE_PREEMPTION 1
 
 /* 1=同优先级任务按时间片轮转，0=不自动切换 */
-#define configUSE_TIME_SLICING 0
+#define configUSE_TIME_SLICING 1
 
 /* 1=使用硬件指令优化任务选择 (CLZ)，0=通用C算法 */
 #define configUSE_PORT_OPTIMISED_TASK_SELECTION 0
