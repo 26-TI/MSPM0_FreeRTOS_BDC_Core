@@ -59,4 +59,5 @@ void device_init()
   /* INS 角度闭环 — 陀螺仪 + 双电机 */
   ins.init(&ti_gyro, &motor_left, &motor_right);
   ins._pid.init(0.05, 0.0, 0.0, 0.01, 1.0, 1, 1);
+  
 }

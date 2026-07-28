@@ -357,22 +357,33 @@ void Menu::value_cancel()
 
 /**
  * @brief 渲染入口 — 脏检查后分发到具体渲染函数
+ *
+ * ST_IDLE 显示动态数据 (陀螺仪角度/tick), 跳过脏检查每次刷新。
+ * ST_NAV/ST_EDIT 仅在状态变化时渲染 (省 OLED 刷新开销)。
  */
 void Menu::render()
 {
+  /* IDLE 界面始终刷新 (显示动态数据) */
+  if (_state == ST_IDLE)
+  {
+    render_idle();
+    iic_oled.refresh();
+    return;
+  }
+
+  /* 导航/编辑模式仅在脏时渲染 */
   if (!_dirty) return;
   _dirty = false;
 
   switch (_state)
   {
-    case ST_IDLE:
-      render_idle();
-      break;
     case ST_NAV:
       render_nav();
       break;
     case ST_EDIT:
       render_edit();
+      break;
+    default:
       break;
   }
   iic_oled.refresh();
@@ -384,19 +395,19 @@ void Menu::render()
 void Menu::render_idle()
 {
   char buf[MENU_CHARS_PER_LINE + 1];
-  iic_oled.clear();
 
   user_system::format(buf, sizeof(buf), "MSPM0 BDC Core");
   iic_oled.show_string(0, 0, buf);
   user_system::format(buf, sizeof(buf), "K3:Menu K3L:Home");
   iic_oled.show_string(0, 1, buf);
 
-  /* 显示最新陀螺仪角度 */
+  /* 显示最新陀螺仪角度 — 固定宽度避免残留 */
   const TiGyro::ReportData &r = ti_gyro.get_last_report();
   if (r.valid)
-    user_system::format(buf, sizeof(buf), "Yaw:%6.1f", (double)r.yaw_deg);
+    user_system::format(buf, sizeof(buf), "Yaw:%6.1f     ", (double)r.yaw_deg);
   else
-    user_system::format(buf, sizeof(buf), "Yaw:  --.--");
+    user_system::format(buf, sizeof(buf), "Yaw:  --.--   ");
+
   iic_oled.show_string(0, 2, buf);
 
   user_system::format(buf, sizeof(buf), "Tick:%lu", (unsigned long)xTaskGetTickCount());

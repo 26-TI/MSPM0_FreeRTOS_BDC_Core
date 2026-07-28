@@ -143,7 +143,8 @@ private:
     ST_IDLE,
     ST_NAV,
     ST_EDIT
-  };                                                 ///< 菜单状态枚举
+  }; ///< 菜单状态枚举
+
   State           _state                  = ST_IDLE; ///< 当前状态
   uint8_t         _level                  = 0;       ///< 当前层级 (0=根)
   uint8_t         _cursor[3]              = {};      ///< 每层光标位置
