@@ -130,7 +130,7 @@
 #define configSUPPORT_DYNAMIC_ALLOCATION 1
 
 /* FreeRTOS 堆总大小 (字节)，仅 heap_1/2/4.c 有效 */
-#define configTOTAL_HEAP_SIZE (1024 * 16)
+#define configTOTAL_HEAP_SIZE (1024 * 32)
 
 /* 1=由应用程序分配堆数组，0=由链接器分配 */
 #define configAPPLICATION_ALLOCATED_HEAP 0
