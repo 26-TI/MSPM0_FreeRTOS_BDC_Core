@@ -24,7 +24,10 @@
  * 循线参数
  * =================================================================== */
 
-#define LINE_BASE_SPEED 2.0f   ///< 基础前进速度 (rps)
+// base:2.0f  error:1.3
+// base:3.0f  error:2.0
+
+#define LINE_BASE_SPEED 3.0f   ///< 基础前进速度 (rps)
 
 /* ===================================================================
  * 辅助函数：从 12 位传感器数据计算循线位置误差
@@ -62,7 +65,7 @@ static float line_position_error(uint16_t raw)
 }
 
 /* ===================================================================
- * 循线控制任务 (5ms, 优先级 6)
+ * 循线控制任务 (10ms, 优先级 6)
  * =================================================================== */
 
 void line_task(void *arg)
@@ -73,7 +76,7 @@ void line_task(void *arg)
   {
     uint16_t raw        = g_track_data & 0x0FFFU;
     float    error      = line_position_error(raw);
-    float    correction = error * 1.2f;
+    float    correction = error * 2.0f;
 
     /* ── 差速驱动 ── */
     float left_speed  = LINE_BASE_SPEED - correction;
@@ -82,6 +85,6 @@ void line_task(void *arg)
     motor_left.set_speed(left_speed);
     motor_right.set_speed(-right_speed); /* 右轮硬件反装, 取负 */
 
-    vTaskDelay(pdMS_TO_TICKS(5));
+    vTaskDelay(pdMS_TO_TICKS(10));
   }
 }

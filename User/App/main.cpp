@@ -44,16 +44,16 @@ int main(void)
   /* -------- 创建 FreeRTOS 任务 -------- */
 
   /* 巡线传感器读取处理 (PCA9555, I2C1) */
-  xTaskCreate(track_task, "track", 0x100, NULL, 7, NULL);
+  xTaskCreate(track_task, "track", 0x200, NULL, 7, NULL);
 
-  /* 循线控制 (5ms */
+  /* 循线控制 (10ms) */
   xTaskCreate(line_task, "line", 0x600, NULL, 6, NULL);
 
-  /* 电机控制更新 (5ms */
+  /* 电机控制更新 (10ms) */
   xTaskCreate(motor_task, "motor", 0x400, NULL, 5, NULL);
 
-  /* 电机数据打印 (5ms, 优先级 5) */
-  xTaskCreate(motor_print_task, "motor_prt", 0x200, NULL, 4, NULL);
+  /* 电机数据打印 (10ms) */
+  // xTaskCreate(motor_print_task, "motor_prt", 0x200, NULL, 4, NULL);
 
   /* GPIO / 按键处理 — 必开 */
   xTaskCreate(gpio_task, "gpio", 0x100, NULL, 4, NULL);
@@ -62,7 +62,7 @@ int main(void)
   xTaskCreate(gyro_task, "gyro", 0x200, NULL, 4, NULL);
 
   /* OLED 显示 (200ms, 优先级 5) */
-  xTaskCreate(oled_task, "oled", 0x100, NULL, 3, NULL);
+  // xTaskCreate(oled_task, "oled", 0x100, NULL, 3, NULL);
 
   /* -------- FreeRTOS 测试任务 -------- */
 

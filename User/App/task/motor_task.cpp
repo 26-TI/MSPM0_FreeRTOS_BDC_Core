@@ -25,7 +25,7 @@ void motor_task(void *arg)
   {
     motor_left.update();
     motor_right.update();
-    vTaskDelay(pdMS_TO_TICKS(5));
+    vTaskDelay(pdMS_TO_TICKS(10));
   }
 }
 
@@ -58,6 +58,6 @@ void motor_print_task(void *arg)
       (double)motor_left.get_target(),
       (double)motor_right.get_target());
 
-    vTaskDelay(pdMS_TO_TICKS(5));
+    vTaskDelay(pdMS_TO_TICKS(10));
   }
 }
