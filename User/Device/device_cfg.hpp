@@ -11,6 +11,7 @@
 #include "iic_oled.hpp"
 #include "iic_track.hpp"
 #include "ins.hpp"
+#include "can_stepper_motor.hpp"
 
 /* ---- 函数声明 ---- */
 
@@ -30,5 +31,10 @@ extern Motor    motor_right; ///< 右轮电机 (PWM-G0 CH2/CH3, QEI1)
 extern IicOled  iic_oled;    ///< OLED SSD1306 (I2C2, 0x3C)
 extern IicTrack iic_track;   ///< 巡线 PCA9555 (I2C1, 0x20)
 extern INS      ins;         ///< 惯性导航角度闭环
+extern StepperMotor g_step1;    ///< CAN 步进电机 #1 (CAN ID=0x301)
+extern StepperMotor g_step2;    ///< CAN 步进电机 #2 (CAN ID=0x302)
+
+/** @brief CAN 电机发送回调 (→ bsp_can.send) */
+bool can_motor_send(uint32_t id, const uint8_t *data, uint8_t len);
 
 #endif // __DEVICE_CFG_HPP__

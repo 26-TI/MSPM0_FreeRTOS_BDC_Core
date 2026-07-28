@@ -78,13 +78,13 @@ bool BspUart<BUF_SIZE>::init(const Config &cfg)
   DL_UART_Main_setRXFIFOThreshold(_cfg.uart, DL_UART_RX_FIFO_LEVEL_1_2_FULL);
   DL_UART_setRXInterruptTimeout(_cfg.uart, 6U);
   DL_UART_Main_enableInterrupt(_cfg.uart,
-                               DL_UART_MAIN_INTERRUPT_RX | DL_UART_MAIN_INTERRUPT_RX_TIMEOUT_ERROR);
+                               DL_UART_MAIN_INTERRUPT_RX | DL_UART_MAIN_INTERRUPT_RX_TIMEOUT_ERROR
+                                 | DL_UART_MAIN_INTERRUPT_DMA_DONE_TX);
 
   /* TX: DMA */
   DL_DMA_disableChannel(DMA, _cfg.dma_tx_chan);
   DL_DMA_setSrcAddr(DMA, _cfg.dma_tx_chan, (uint32_t)_tx_buf);
   DL_DMA_setDestAddr(DMA, _cfg.dma_tx_chan, (uint32_t)&(_cfg.uart->TXDATA));
-
   return true;
 }
 
@@ -166,8 +166,13 @@ int BspUart<B>::uart_printf(const char *fmt, ...)
   if (n < 0)
     return -1;
 
-  size_t sent = send(reinterpret_cast<const uint8_t *>(buf), static_cast<size_t>(n), portMAX_DELAY);
-  return (sent == static_cast<size_t>(n)) ? n : -1;
+  /* 轮询 TX（DMA 硬件触发待查） */
+  for (int i = 0; i < n; i++)
+  {
+    while (DL_UART_Main_isTXFIFOFull(_cfg.uart)) {}
+    DL_UART_Main_transmitDataBlocking(_cfg.uart, (uint8_t)buf[i]);
+  }
+  return n;
 }
 
 /**
@@ -242,3 +247,4 @@ extern "C" void UART3_IRQHandler(void)
     i->handle_isr(&w);
   portYIELD_FROM_ISR(w);
 }
+

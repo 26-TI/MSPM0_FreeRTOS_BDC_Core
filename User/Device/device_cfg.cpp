@@ -13,6 +13,8 @@ Motor    motor_right;
 IicOled  iic_oled;
 IicTrack iic_track;
 INS      ins;
+StepperMotor g_step1;
+StepperMotor g_step2;
 
 /* ==================== 设备初始化 ==================== */
 void device_init()
@@ -51,13 +53,23 @@ void device_init()
   ti_gyro.init(&bsp_uart3);
 
   /* OLED — I2C2, 地址 0x3C */
-  iic_oled.init(&bsp_i2c2, 0x3C);
+  // iic_oled.init(&bsp_i2c2, 0x3C);
 
   /* Track (PCA9555 巡线) — I2C1, 地址 0x20 */
-  iic_track.init(&bsp_i2c1, 0x20);
+  // iic_track.init(&bsp_i2c1, 0x20);
 
   /* INS 角度闭环 — 陀螺仪 + 双电机 */
   ins.init(&ti_gyro, &motor_left, &motor_right);
   ins._pid.init(0.05, 0.0, 0.0, 0.01, 1.0, 1, 1);
-  
+
+  /* CAN 步进电机 — 远程节点 #1 / #2 */
+  g_step1.init({1, 0x300, can_motor_send});
+  g_step2.init({2, 0x300, can_motor_send});
+  MultiStep::set_send_fn(can_motor_send);
+}
+
+/* ==================== CAN 发送桥接 ==================== */
+bool can_motor_send(uint32_t id, const uint8_t *data, uint8_t len)
+{
+  return bsp_can.send(id, data, len);
 }

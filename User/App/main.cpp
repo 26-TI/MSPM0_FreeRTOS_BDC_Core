@@ -48,21 +48,23 @@ void init_task(void *arg)
   /* -------- 创建 FreeRTOS 任务 -------- */
 
   /* 高频传感器 / 实时性高 */
-  xTaskCreate(track_task, "track", 0x100, NULL, 7, NULL);
-  xTaskCreate(motor_task, "motor", 0x200, NULL, 7, NULL);
+  // xTaskCreate(track_task, "track", 0x100, NULL, 7, NULL);
+  // xTaskCreate(motor_task, "motor", 0x200, NULL, 7, NULL);
 
   /* 控制任务 */
-  xTaskCreate(angle_task, "angle", 0x200, NULL, 6, NULL);
+  // xTaskCreate(angle_task, "angle", 0x200, NULL, 6, NULL);
 
   // xTaskCreate(line_task, "line", 0x200, NULL, 6, NULL);
   // xTaskCreate(line_off_task, "line_off", 0x200, NULL, 6, NULL);
 
   /* 不重要但需要定期运行 */
   // xTaskCreate(motor_print_task, "motor_prt", 0x100, NULL, 5, NULL);
-  xTaskCreate(gpio_task, "gpio", 0x100, NULL, 4, NULL);
-  xTaskCreate(gyro_task, "gyro", 0x100, NULL, 4, NULL);
-  xTaskCreate(menu_task, "menu", 0x200, NULL, 3, NULL);
-  xTaskCreate(cpu_monitor_task, "cpu_mon", 0x100, NULL, 2, NULL);
+  // xTaskCreate(gpio_task, "gpio", 0x100, NULL, 4, NULL);
+  // xTaskCreate(gyro_task, "gyro", 0x100, NULL, 4, NULL);
+  // xTaskCreate(menu_task, "menu", 0x200, NULL, 3, NULL);
+  // xTaskCreate(cpu_monitor_task, "cpu_mon", 0x100, NULL, 2, NULL);
+  xTaskCreate(stepper_test_task, "step_tst", 0x400, NULL, 5, NULL);
+
 
   /* 消费菜单事件, 打印管理 */
   xTaskCreate(debug_print_task, "dbg_prt", 0x100, NULL, 3, NULL);

@@ -145,6 +145,17 @@ extern "C"
    */
   void oled_test_task(void *arg);
 
+  /**
+   * @brief 步进电机 CAN 测试任务
+   *
+   * 初始化 S1(0x301) / S2(0x302)，依次定位 90°/180°，
+   * 最后广播一帧双电机回零，第三槽跳过。
+   * 依赖 bsp_can + 外部步进从机。
+   *
+   * @param arg FreeRTOS 任务参数（未使用）
+   */
+  void stepper_test_task(void *arg);
+
   /* ==================== 任务间共享变量 ==================== */
 
   /** @brief 巡线传感器最新读数 (12 位有效, 由 track_test_task 更新) */

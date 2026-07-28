@@ -24,7 +24,8 @@
       "request": "launch",
       "name": "jlink-debug",
       "servertype": "jlink",
-      "interface": "swd", 
+      "interface": "swd",
+      "serverpath": "D:\\Toolchain\\Jlink\\JLink_V958\\JLinkGDBServerCL.exe",
       // 这个是根据主文件名 作为名字 ${workspaceFolderBasename}
       "executable": "build/${workspaceFolderBasename}.elf",
       "runToEntryPoint": "main",
