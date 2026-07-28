@@ -19,7 +19,7 @@
 
 #include <stdint.h>
 
-#include "FreeRTOS.h"
+#include "FreeRTOS.h" // IWYU pragma: keep
 #include "semphr.h"
 
 #ifdef __cplusplus
@@ -164,6 +164,30 @@ extern "C"
    * @param arg FreeRTOS 任务参数（未使用）
    */
   void menu_task(void *arg);
+
+  /**
+   * @brief 启动初始化任务
+   *
+   * 系统启动时以最高优先级运行一次:
+   *   1. 调用 bsp_init / protocol_init / device_init 初始化所有外设
+   *   2. 创建任务间信号量
+   *   3. 创建所有正式任务
+   *   4. vTaskDelete(NULL) 自删除
+   *
+   * @param arg FreeRTOS 任务参数（未使用）
+   */
+  void init_task(void *arg);
+
+  /**
+   * @brief 菜单事件信号量测试任务
+   *
+   * 每 50ms 轮询所有 g_menu_sems[] 信号量，收到后串口打印事件名称。
+   * 用于验证 菜单 → 信号量 give → 任务 take 的完整链路。
+   * 优先级 3。
+   *
+   * @param arg FreeRTOS 任务参数（未使用）
+   */
+  void debug_print_task(void *arg);
 
   /* ===================================================================
    * 任务间共享变量

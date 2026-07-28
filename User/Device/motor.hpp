@@ -57,21 +57,45 @@ public:
     float speed;
   };
 
+  /**
+   * @brief 绑定电机硬件资源并初始化
+   * @param cfg  电机配置 (PWM/QEI/编码器线数/减速比/控制周期)
+   */
   void Motor_Init(const Config &cfg);
 
-  /// 初始化 PID 参数
-  void PID_Init(float p, float i, float d, float t, float out_max, float i_max, uint8_t i_epsilon_enable);
+  /**
+   * @brief 初始化速度环 PID 参数
+   * @param p  比例系数
+   * @param i  积分系数
+   * @param d  微分系数
+   * @param t  采样周期 (秒)
+   * @param out_max  PID 输出上限
+   * @param i_max    积分上限
+   * @param i_epsilon_enable  积分分离使能
+   */
+  void pid_init(float p, float i, float d, float t, float out_max, float i_max, uint8_t i_epsilon_enable);
 
+  /** @brief 读取编码器 → 计算转速 → PID 输出 → 更新 PWM (由定时任务调用) */
   void update();
+
+  /** @brief 使能电机输出 (开环, 占空比 50%) */
   void enable();
+
+  /** @brief 关闭电机输出 */
   void disable();
+
+  /** @brief 使能速度闭环控制 (PID 生效) */
   void speed_control_enable();
 
+  /**
+   * @brief 设定目标速度 (转/秒)
+   * @param target  目标速度
+   */
   void set_speed(float target);
 
   /* ── 调试接口 ── */
-  float get_target()  const { return _state.target; }
-  float get_speed()   const { return _state.speed; }
+  float get_target() const { return _state.target; }
+  float get_speed() const { return _state.speed; }
   float get_pid_out() const { return _pid_out; }
 
 private:

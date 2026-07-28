@@ -9,7 +9,7 @@
 #include "task.hpp"
 #include "device_cfg.hpp"
 
-#include "FreeRTOS.h"
+#include "FreeRTOS.h" // IWYU pragma: keep
 #include "task.h"
 #include "semphr.h"
 
@@ -18,7 +18,7 @@
  * =================================================================== */
 
 void line_off_task(void *arg)
-{ 
+{
   (void)arg;
 
   while (1)

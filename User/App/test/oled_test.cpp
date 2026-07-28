@@ -10,11 +10,10 @@
  */
 
 #include "test.hpp"
-#include "bsp_cfg.hpp"
 #include "device_cfg.hpp"
 #include "user_system.hpp"
 
-#include "FreeRTOS.h"
+#include "FreeRTOS.h" // IWYU pragma: keep
 #include "task.h"
 
 /* ===================================================================
@@ -28,7 +27,7 @@ void oled_test_task(void *arg)
   iic_oled.clear();
   char buf[17]; /* 16 字符 + '\0' */
   int  len;
-  
+
   while (1)
   {
     /* ── 行0: 12路巡线传感器 (0=黑线 / 1=白) ── */

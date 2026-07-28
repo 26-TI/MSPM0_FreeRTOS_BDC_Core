@@ -23,6 +23,11 @@ extern "C" void MCAN0_INST_IRQHandler(void)
  *  辅助
  * ================================================================ */
 
+/**
+ * @brief 进入 CAN 配置模式 (CCCR.CCE=1, CCCR.INIT=1)
+ *
+ * 在修改 CAN 配置寄存器前必须调用，等待 INIT 置位后返回。
+ */
 void BspCan::write_unlock()
 {
   MCAN0_INST->MCANSS.MCAN.MCAN_CCCR |= (MCAN_CCCR_CCE_MASK | MCAN_CCCR_INIT_MASK);
@@ -31,6 +36,11 @@ void BspCan::write_unlock()
   }
 }
 
+/**
+ * @brief 退出 CAN 配置模式, 进入正常工作模式
+ *
+ * 清除 CCCR.CCE 和 CCCR.INIT, 等待 INIT 清零后返回。
+ */
 void BspCan::write_lock()
 {
   MCAN0_INST->MCANSS.MCAN.MCAN_CCCR &= ~MCAN_CCCR_CCE_MASK;

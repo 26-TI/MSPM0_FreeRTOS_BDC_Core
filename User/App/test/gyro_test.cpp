@@ -6,10 +6,9 @@
  */
 
 #include "test.hpp"
-#include "bsp_cfg.hpp"
 #include "device_cfg.hpp"
 
-#include "FreeRTOS.h"
+#include "FreeRTOS.h" // IWYU pragma: keep
 #include "task.h"
 
 /* ===================================================================

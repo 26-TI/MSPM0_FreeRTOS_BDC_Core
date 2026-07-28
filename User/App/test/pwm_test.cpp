@@ -19,7 +19,7 @@ void pwm_test_task(void *arg)
   /* 应用层初始化占空比 */
   // bsp_pwm_a0.set_duty(0, 2500); /* CH0: 10%  1*/
   bsp_pwm_a0.set_duty(1, 2500); /* CH1: 50%  2*/
-  bsp_pwm_a0.set_duty(2, 200); /* CH2: 50%  2*/
+  bsp_pwm_a0.set_duty(2, 200);  /* CH2: 50%  2*/
   // bsp_pwm_a0.set_duty(3, 200); /* CH3: 50%  1*/
 
   while (1)

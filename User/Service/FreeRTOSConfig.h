@@ -189,7 +189,7 @@
 /* ── 运行时间计数器（tick-hook 驱动，1 tick = 1000 单位，与 tick 同步）── */
 extern volatile unsigned long CPU_RunTime;
 #define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS() (CPU_RunTime = 0UL)
-#define portGET_RUN_TIME_COUNTER_VALUE()          CPU_RunTime
+#define portGET_RUN_TIME_COUNTER_VALUE() CPU_RunTime
 
 /******************************************************************************/
 /* 协程配置 */

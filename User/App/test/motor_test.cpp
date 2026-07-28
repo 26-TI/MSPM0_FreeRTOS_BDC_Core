@@ -11,18 +11,18 @@
 #include "test.hpp"
 #include "device_cfg.hpp"
 
-#include "FreeRTOS.h"
+#include "FreeRTOS.h" // IWYU pragma: keep
 #include "task.h"
-#include <math.h>
+#include <math.h> // IWYU pragma: keep
 
 /* ===================================================================
  * 波形选择 (二者互斥)
  * =================================================================== */
-#define TEST_SINE_WAVE   0
+#define TEST_SINE_WAVE 0
 #define TEST_SQUARE_WAVE 1
 
-#define TEST_WAVE_PERIOD_S  3.0f   ///< 波形周期 (秒)
-#define TEST_WAVE_AMP       3.0f   ///< 波形幅值 (rps)
+#define TEST_WAVE_PERIOD_S 3.0f ///< 波形周期 (秒)
+#define TEST_WAVE_AMP 3.0f      ///< 波形幅值 (rps)
 
 /* ===================================================================
  * 电机测试任务 (2ms) — 波形驱动速度控制

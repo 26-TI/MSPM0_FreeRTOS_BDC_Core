@@ -8,10 +8,18 @@
 
 #include "iic_track.hpp"
 
-/* ==================== 构造 ==================== */
+// ---- 构造 ----
+
 IicTrack::IicTrack() {}
 
-/* ==================== 初始化 ==================== */
+// ---- init() — 绑定 I2C 总线 ----
+
+/**
+ * @brief 绑定 I2C 总线驱动
+ * @param i2c       BspI2c 实例指针
+ * @param dev_addr  PCA9555 设备地址 (0x20)
+ * @return true=成功
+ */
 bool IicTrack::init(BspI2c *i2c, uint8_t dev_addr)
 {
   if (!i2c)
@@ -22,7 +30,12 @@ bool IicTrack::init(BspI2c *i2c, uint8_t dev_addr)
   return true;
 }
 
-/* ==================== 数据读取 ==================== */
+// ---- read() — 读取 12 路传感器 ----
+
+/**
+ * @brief 读取 PCA9555 端口 0 (低 8 位) 和端口 1 (高 8 位), 合并为 12 位数据
+ * @return 12 位传感器值 (bit 0→D0 ... bit 11→D11, 高位补零)
+ */
 
 uint16_t IicTrack::read()
 {

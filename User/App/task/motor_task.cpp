@@ -1,19 +1,27 @@
 /**
  * @file motor_task.cpp
- * @brief 电机控制更新任务 (5ms) + 电机数据打印任务 (50ms)
+ * @brief 电机控制更新任务 (10ms) + 电机数据打印任务 (50ms)
  */
 
 #include "task.hpp"
 #include "device_cfg.hpp"
 #include "bsp_cfg.hpp"
 
-#include "FreeRTOS.h"
+#include "FreeRTOS.h" // IWYU pragma: keep
 #include "task.h"
 
-/* ===================================================================
- * 电机控制更新任务 (5ms, 优先级 5) — 仅 update, 不设速度不打印
- * =================================================================== */
+// ==========================================================================
+// motor_task — 电机控制更新 (10ms, 优先级 7)
+// ==========================================================================
 
+/**
+ * @brief 双电机闭环控制更新 — 每 10ms 读取编码器 + PID 计算 + 更新 PWM
+ *
+ * 启动时自动使能速度闭环 (speed_control_enable)。
+ * 目标速度由 set_speed() 设定，本任务仅周期性调用 update()。
+ *
+ * @param arg  未使用
+ */
 void motor_task(void *arg)
 {
   (void)arg;

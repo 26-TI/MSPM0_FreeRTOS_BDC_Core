@@ -17,6 +17,7 @@
 #include "bsp_cfg.hpp"      // IWYU pragma: keep
 #include "protocol_cfg.hpp" // IWYU pragma: keep
 #include "device_cfg.hpp"   // IWYU pragma: keep
+#include "menu_event.hpp"   // IWYU pragma: keep
 #include "test.hpp"         // IWYU pragma: keep
 #include "task.hpp"         // IWYU pragma: keep
 

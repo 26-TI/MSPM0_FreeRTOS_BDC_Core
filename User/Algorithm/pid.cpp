@@ -1,5 +1,18 @@
+/**
+ * @file pid.cpp
+ * @brief 增量式 PID 控制器 — 实现
+ */
+
 #include "pid.hpp"
 
+// ==========================================================================
+// init() — 初始化 PID 参数
+// ==========================================================================
+
+/**
+ * @brief 保存控制参数并清零历史状态
+ * @see PID::init()
+ */
 void PID::init(float p, float i, float d, float t, float out_max, float i_max, uint8_t i_epsilon_enable)
 {
   Kp_               = p;
@@ -13,6 +26,23 @@ void PID::init(float p, float i, float d, float t, float out_max, float i_max, u
   clear();
 }
 
+// ==========================================================================
+// calc() — PID 计算核心
+// ==========================================================================
+
+/**
+ * @brief 执行一次增量式 PID 计算
+ *
+ * 算法步骤:
+ *   1. 计算误差 = target - current
+ *   2. 积分分离: 误差 < 目标×60% 时累加积分
+ *   3. 积分清零: 误差 > 目标时清零 (方向快速切换)
+ *   4. 积分限幅: 限制在 ±I_MAX_ 内
+ *   5. 输出 = Kp×e + Ki×∫e·dt + Kd×de/dt
+ *   6. 输出限幅: 限制在 ±OUT_MAX_ 内
+ *
+ * @see PID::calc()
+ */
 float PID::calc(float target, float current)
 {
   // 计算误差值
@@ -60,6 +90,14 @@ float PID::calc(float target, float current)
   return output;
 }
 
+// ==========================================================================
+// clear() — 清零历史误差
+// ==========================================================================
+
+/**
+ * @brief 清零积分累加值和上次误差，重置控制器状态
+ * @see PID::clear()
+ */
 void PID::clear()
 {
   last_error_ = 0;

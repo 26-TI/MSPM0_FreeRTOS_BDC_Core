@@ -103,5 +103,3 @@ uint8_t BspI2c::read_reg(uint8_t dev, uint8_t reg)
   _wait_done();
   return rx;
 }
-
-

@@ -37,9 +37,17 @@ void can_recv_isr_test_task(void *arg)
       bsp_uart4.uart_printf(
         "[CAN-RECV-ISR] #%lu ID=0x%03lX LEN=%u "
         "%02X %02X %02X %02X %02X %02X %02X %02X\r\n",
-        total, rx_id, rx_len,
-        rx_data[0], rx_data[1], rx_data[2], rx_data[3],
-        rx_data[4], rx_data[5], rx_data[6], rx_data[7]);
+        total,
+        rx_id,
+        rx_len,
+        rx_data[0],
+        rx_data[1],
+        rx_data[2],
+        rx_data[3],
+        rx_data[4],
+        rx_data[5],
+        rx_data[6],
+        rx_data[7]);
     }
   }
 }

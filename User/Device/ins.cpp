@@ -14,7 +14,6 @@ void INS::init(TiGyro *gyro, Motor *motor_left, Motor *motor_right)
   _gyro        = gyro;
   _motor_left  = motor_left;
   _motor_right = motor_right;
-
 }
 
 /* ===================================================================
@@ -49,7 +48,7 @@ void INS::enable()
 void INS::disable()
 {
   _enabled = false;
-  if (_motor_left)  _motor_left->set_speed(0.0f);
+  if (_motor_left) _motor_left->set_speed(0.0f);
   if (_motor_right) _motor_right->set_speed(0.0f);
   _correction = 0.0f;
 }
@@ -63,7 +62,7 @@ static float angle_error(float target, float current)
   float err = target - current;
 
   /* 归一化到 [-180, 180) */
-  while (err > 180.0f)  err -= 360.0f;
+  while (err > 180.0f) err -= 360.0f;
   while (err < -180.0f) err += 360.0f;
 
   return err;
@@ -91,7 +90,7 @@ void INS::update()
   /* ── 2. 计算角度误差 ── */
   float error = angle_error(_target_yaw, _current_yaw);
 
-  if(fabs(error) < 0.8f)
+  if (fabs(error) < 0.8f)
   {
     _motor_left->set_speed(0.0f);
     _motor_right->set_speed(0.0f); /* 右轮硬件反装 */
@@ -99,7 +98,7 @@ void INS::update()
   }
 
   /* ── 3. PID: target=error, current=0 → 输出 = Kp*error + ... ── */
-  _correction = _pid.calc(0.0f,error);
+  _correction = _pid.calc(0.0f, error);
 
   /* ── 4. 差速驱动 ── */
   float left_speed  = _base_speed - _correction;

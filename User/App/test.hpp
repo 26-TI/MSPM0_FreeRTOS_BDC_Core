@@ -97,6 +97,13 @@ extern "C"
  */
   void proto_send_test_task(void *arg);
 
+  /**
+   * @brief 双电机开环控制测试
+   *
+   * 正弦/方波/恒速波形测试，由 TEST_SINE_WAVE / TEST_SQUARE_WAVE 宏选择。
+   *
+   * @param arg FreeRTOS 任务参数（未使用）
+   */
   void motor_test_task(void *arg);
 
   /**

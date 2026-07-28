@@ -34,7 +34,9 @@ void can_send_test_task(void *arg)
     if (bsp_can.send(0x123U, data, 8U))
     {
       bsp_uart4.uart_printf("[CAN-SEND] #%lu OK D0=%02X D7=%02X\r\n",
-                            cnt, data[0], data[7]);
+                            cnt,
+                            data[0],
+                            data[7]);
     }
     else
     {

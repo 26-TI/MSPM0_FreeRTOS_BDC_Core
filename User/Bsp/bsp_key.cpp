@@ -90,7 +90,7 @@ BspKey::Event BspKey::poll()
       if (!_long_fired && _hold_cnt >= _long_press_cnt)
       {
         _long_fired = true; /* 标记已触发，本次按下不再重复 */
-        result = LONG_PRESS;
+        result      = LONG_PRESS;
       }
     }
   }
@@ -109,14 +109,14 @@ BspKey::Event BspKey::poll()
         _last_stable = true;
         _hold_cnt    = 0U;
         _long_fired  = false;
-        result = PRESSED;
+        result       = PRESSED;
       }
       else if (!active && _last_stable)
       {
         /* 确认释放 → 根据是否长按过给出不同计数值 */
         _last_stable = false;
         _hold_cnt    = 0U;
-        result = RELEASED;
+        result       = RELEASED;
 
         if (_sem)
         {

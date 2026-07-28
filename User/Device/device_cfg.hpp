@@ -12,10 +12,18 @@
 #include "iic_track.hpp"
 #include "ins.hpp"
 
-/* ==================== 函数声明 ==================== */
+/* ---- 函数声明 ---- */
+
+/**
+ * @brief 设备层统一初始化 — 绑定 BSP 驱动到设备对象
+ *
+ * 初始化顺序: 左轮电机 → 右轮电机 → 陀螺仪 → OLED → 巡线 → INS
+ *
+ * @note 必须在 bsp_init() 之后、任务创建之前调用
+ */
 void device_init();
 
-/* ==================== 全局声明 ==================== */
+/* ---- 全局声明 ---- */
 extern TiGyro   ti_gyro;
 extern Motor    motor_left;  ///< 左轮电机 (PWM-G0 CH0/CH1, QEI0)
 extern Motor    motor_right; ///< 右轮电机 (PWM-G0 CH2/CH3, QEI1)

@@ -30,7 +30,7 @@ void device_init()
     .pwm_max           = 5000,       /* PWM 周期 */
   });
 
-  motor_left.PID_Init(1000, 25000, 0, 0.01, 2400, 1100, 0);
+  motor_left.pid_init(1000, 25000, 0, 0.01, 2400, 1100, 0);
 
   /* ---- 右轮电机 — PWM-G0 CH2(正转)/CH1(反转), QEI0, EN=PA16 ---- */
   motor_right.Motor_Init({
@@ -45,7 +45,7 @@ void device_init()
     .pwm_max           = 5000, /* PWM 周期 */
   });
 
-  motor_right.PID_Init(1000, 25000, 0, 0.01, 2400, 1100, 0);
+  motor_right.pid_init(1000, 25000, 0, 0.01, 2400, 1100, 0);
 
   /* 陀螺仪 — UART3 */
   ti_gyro.init(&bsp_uart3);
@@ -59,5 +59,4 @@ void device_init()
   /* INS 角度闭环 — 陀螺仪 + 双电机 */
   ins.init(&ti_gyro, &motor_left, &motor_right);
   ins._pid.init(0.05, 0.0, 0.0, 0.01, 1.0, 1, 1);
-
 }

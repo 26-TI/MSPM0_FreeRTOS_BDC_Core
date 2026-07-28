@@ -30,7 +30,10 @@
 void proto_on_command(uint8_t cmd, const uint8_t *data, uint8_t len)
 {
   bsp_uart4.uart_printf("[PROTO] RX CMD=0x%02X LEN=%u D0=%02X D1=%02X\r\n",
-                        cmd, len, data[0], data[1]);
+                        cmd,
+                        len,
+                        data[0],
+                        data[1]);
 
   /* 原样回传（上位机可验证收发正确性） */
   proto_uart.send(cmd, data, len);
@@ -50,7 +53,7 @@ void proto_send_test_task(void *arg)
 
   while (1)
   {
-    uint8_t d[2] = { cnt, (uint8_t)(cnt + 1U) };
+    uint8_t d[2] = {cnt, (uint8_t)(cnt + 1U)};
 
     if (proto_uart.send(0x10U, d, 2U))
     {

@@ -20,30 +20,44 @@
 
 #include "task.hpp"
 
-#include "FreeRTOS.h"
+#include "FreeRTOS.h" // IWYU pragma: keep
 #include "task.h"
 
-/* ===================================================================
- * 运行时间计数器 (tick-hook 驱动)
- * =================================================================== */
+// ==========================================================================
+// 运行时间计数器 (tick-hook 驱动)
+// ==========================================================================
 
 volatile unsigned long CPU_RunTime = 0UL;
 
+/**
+ * @brief FreeRTOS tick 钩子 — 每 tick 累加 CPU_RunTime (+1000/tick)
+ *
+ * 用于 configGENERATE_RUN_TIME_STATS, 与 1000Hz tick 同步。
+ * 每 tick 计数 +1000, 即 RunTime 单位为 μs。
+ */
 extern "C" void vApplicationTickHook(void)
 {
   CPU_RunTime += 1000; /* 每 tick +1000，与 1000Hz tick 同步 */
 }
 
-/* ===================================================================
- * CPU 空闲率监控
- * =================================================================== */
+// ==========================================================================
+// cpu_monitor_task — CPU 空闲率监控 (500ms, 优先级 2)
+// ==========================================================================
 
 #define MONITOR_PERIOD_MS 1000
-#define MAX_TASKS          16
+#define MAX_TASKS 16
 
-/* 全局变量，供调试器查看 */
+/** @brief CPU 空闲率百分比 (全局变量, 供调试器/OLED 查看) */
 unsigned long g_idle_pct = 0;
 
+/**
+ * @brief 每 500ms 获取所有任务运行时间, 计算 CPU 空闲率
+ *
+ * 原理: 空闲任务运行时间 / 总运行时间 = 空闲率
+ * 结果存入 g_idle_pct 供调试器/OLED 查看。
+ *
+ * @param arg  未使用
+ */
 void cpu_monitor_task(void *arg)
 {
   (void)arg;

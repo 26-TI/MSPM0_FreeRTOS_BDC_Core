@@ -14,7 +14,7 @@
 #include "test.hpp"        /* g_track_data */
 #include "user_system.hpp" /* user_system::format */
 
-#include "FreeRTOS.h"
+#include "FreeRTOS.h" // IWYU pragma: keep
 #include "task.h"
 
 void oled_task(void *arg)

@@ -46,7 +46,7 @@ extern BspKey  key_1;     ///< 按键 1 (PB8)
 extern BspKey  key_2;     ///< 按键 2 (PA8)
 extern BspKey  key_3;     ///< 按键 3 (PA31)
 
-extern BspI2c bsp_i2c1;   ///< I2C1 (PB2/PB3), 巡线模块 PCA9555
-extern BspI2c bsp_i2c2;   ///< I2C2 (PA24/PA25), OLED SSD1306
+extern BspI2c bsp_i2c1; ///< I2C1 (PB2/PB3), 巡线模块 PCA9555
+extern BspI2c bsp_i2c2; ///< I2C2 (PA24/PA25), OLED SSD1306
 
 #endif /* __BSP_CFG_HPP__ */

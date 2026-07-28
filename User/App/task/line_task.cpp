@@ -20,7 +20,7 @@
 #include "test.hpp" /* g_track_data */
 #include "device_cfg.hpp"
 
-#include "FreeRTOS.h"
+#include "FreeRTOS.h" // IWYU pragma: keep
 #include "task.h"
 #include "semphr.h"
 
@@ -38,12 +38,6 @@
 
 /* 传感器位置权值 (左负右正, 中间=0, 范围 ±9), 只读常量 */
 static const int16_t LINE_WEIGHT[12] = {-9, -7, -5, -3, -1, 0, 0, 1, 3, 5, 7, 9};
-
-/* ===================================================================
- * 脱线检测信号量（供 line_off_task 永久阻塞接收）
- * =================================================================== */
-
-SemaphoreHandle_t g_line_off_sem = NULL; ///< 脱线二值信号量
 
 /* ===================================================================
  * 辅助函数：从 12 位传感器位掩码计算循线位置误差 (纯整数+最终一次浮点)

@@ -14,7 +14,7 @@
 #include "bsp_cfg.hpp"
 #include "user_system.hpp"
 
-#include "FreeRTOS.h"
+#include "FreeRTOS.h" // IWYU pragma: keep
 #include "task.h"
 
 /* ===================================================================
@@ -53,10 +53,13 @@ void Menu::init()
   iic_oled.clear();
 }
 
-/* ===================================================================
- * Menu::tick()
- * =================================================================== */
+// ==========================================================================
+// tick() — 每周期入口
+// ==========================================================================
 
+/**
+ * @brief 每 50ms 调用一次: 读按键 → 状态机 → 渲染
+ */
 void Menu::tick()
 {
   read_keys();
@@ -64,10 +67,13 @@ void Menu::tick()
   render();
 }
 
-/* ===================================================================
- * read_keys() — 信号量消费 (3键)
- * =================================================================== */
+// ==========================================================================
+// read_keys() — 消费按键信号量, 区分短按/长按
+// ==========================================================================
 
+/**
+ * @brief 消费 key_1/2/3 的信号量, 区分短按(cnt==1)和长按(cnt>=2)
+ */
 void Menu::read_keys()
 {
   SemaphoreHandle_t sems[3] = {
@@ -96,10 +102,15 @@ void Menu::read_keys()
   }
 }
 
-/* ===================================================================
- * state_machine()
- * =================================================================== */
+// ==========================================================================
+// state_machine() — 菜单状态机
+// ==========================================================================
 
+/**
+ * @brief 菜单状态机: ST_IDLE ↔ ST_NAV ↔ ST_EDIT
+ *
+ * 全局: key_3 长按 → HOME (任意状态回 IDLE)
+ */
 void Menu::state_machine()
 {
   /* 全局: key_3 长按 → HOME */
@@ -211,10 +222,13 @@ void Menu::state_machine()
   }
 }
 
-/* ===================================================================
- * 导航
- * =================================================================== */
+// ==========================================================================
+// 导航函数组
+// ==========================================================================
 
+/**
+ * @brief 进入子菜单 / 触发动作 / 进入数值编辑
+ */
 void Menu::menu_enter()
 {
   uint8_t idx = _first_idx + _cursor[_level];
@@ -256,6 +270,9 @@ void Menu::menu_enter()
   }
 }
 
+/**
+ * @brief 返回上级菜单 (或 IDLE 如果在根节点)
+ */
 void Menu::menu_back()
 {
   if (_stack_top > 0)
@@ -275,6 +292,9 @@ void Menu::menu_back()
   }
 }
 
+/**
+ * @brief 返回 IDLE 首页 (key_3 长按 / 超时后调用)
+ */
 void Menu::menu_home()
 {
   _state     = ST_IDLE;
@@ -297,6 +317,9 @@ void Menu::menu_home()
   }
 }
 
+/**
+ * @brief 执行菜单动作 — 给出事件信号量 (由 menu_enter/value_confirm 调用)
+ */
 void Menu::menu_action()
 {
   uint8_t idx = _first_idx + _cursor[_level];
@@ -306,26 +329,35 @@ void Menu::menu_action()
   if (item->event_bit == 0U) return;
 
   if (item->type == MENU_TOGGLE || item->type == MENU_VALUE)
-    menu_event_set_with_value(item->event_bit, _edit_val);
+    menu_event_give_with_value(item->event_bit, _edit_val);
   else
-    menu_event_set(item->event_bit);
+    menu_event_give(item->event_bit);
 }
 
+/**
+ * @brief 确认数值编辑, 触发事件, 返回 ST_NAV
+ */
 void Menu::value_confirm()
 {
   menu_action();
   _state = ST_NAV;
 }
 
+/**
+ * @brief 取消数值编辑, 返回 ST_NAV (不触发事件)
+ */
 void Menu::value_cancel()
 {
   _state = ST_NAV;
 }
 
-/* ===================================================================
- * 渲染
- * =================================================================== */
+// ==========================================================================
+// 渲染函数组
+// ==========================================================================
 
+/**
+ * @brief 渲染入口 — 脏检查后分发到具体渲染函数
+ */
 void Menu::render()
 {
   if (!_dirty) return;
@@ -333,14 +365,22 @@ void Menu::render()
 
   switch (_state)
   {
-    case ST_IDLE: render_idle(); break;
-    case ST_NAV:  render_nav();  break;
-    case ST_EDIT: render_edit(); break;
+    case ST_IDLE:
+      render_idle();
+      break;
+    case ST_NAV:
+      render_nav();
+      break;
+    case ST_EDIT:
+      render_edit();
+      break;
   }
   iic_oled.refresh();
 }
 
-/* ── IDLE 首页 ── */
+/**
+ * @brief 渲染 IDLE 首页 (项目名称 + 陀螺仪角度 + tick 计数)
+ */
 void Menu::render_idle()
 {
   char buf[MENU_CHARS_PER_LINE + 1];
@@ -363,7 +403,9 @@ void Menu::render_idle()
   iic_oled.show_string(0, 3, buf);
 }
 
-/* ── 导航菜单 ── */
+/**
+ * @brief 渲染导航菜单列表 (标题 + 选项, 当前项前加 '>')
+ */
 void Menu::render_nav()
 {
   char buf[MENU_CHARS_PER_LINE + 1];
@@ -395,7 +437,9 @@ void Menu::render_nav()
   }
 }
 
-/* ── 数值编辑 ── */
+/**
+ * @brief 渲染数值编辑界面 (名称 + 进度条 + 当前值 + 操作提示)
+ */
 void Menu::render_edit()
 {
   char buf[MENU_CHARS_PER_LINE + 1];
@@ -430,10 +474,14 @@ void Menu::render_edit()
   iic_oled.show_string(0, 3, (char *)"K3:OK  K3L:CANCEL");
 }
 
-/* ===================================================================
- * menu_task (50ms 周期)
- * =================================================================== */
+// ==========================================================================
+// menu_task — FreeRTOS 任务入口 (200ms, 优先级 3)
+// ==========================================================================
 
+/**
+ * @brief OLED 菜单任务 — 每 200ms 调用 g_menu.tick() 驱动菜单引擎
+ * @param arg  未使用
+ */
 void menu_task(void *arg)
 {
   (void)arg;
@@ -441,6 +489,6 @@ void menu_task(void *arg)
   while (1)
   {
     g_menu.tick();
-    vTaskDelay(pdMS_TO_TICKS(50));
+    vTaskDelay(pdMS_TO_TICKS(200));
   }
 }
