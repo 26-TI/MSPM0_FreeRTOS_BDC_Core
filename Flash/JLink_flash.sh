@@ -1,64 +1,88 @@
 #!/bin/bash
+set -u
 
-# 获取当前脚本所在的目录
+# ============================================================
+#  J-Link flash script (Linux)
+#
+#  Flash <project>.hex, NOT <project>.elf.  See README.md.
+#
+#  Tools are resolved from PATH by default. Optional overrides:
+#    export JLINK_HOME=/opt/SEGGER/JLink
+#    export ARM_GCC_BIN=/opt/arm-gnu-toolchain/bin
+# ============================================================
+
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+PROJECT_NAME="$(basename "$PROJECT_DIR")"
 
-# 获取父目录名称作为项目名称
-PROJECT_NAME=$(basename "$(dirname "$SCRIPT_DIR")")
+BUILD_DIR="$PROJECT_DIR/build"
+HEX_FILE="$BUILD_DIR/$PROJECT_NAME.hex"
+ELF_FILE="$BUILD_DIR/$PROJECT_NAME.elf"
 
-# 构建 ELF 文件路径 (假设构建目录结构与 Windows 一致)
-ELF_FILE="build/${PROJECT_NAME}.elf"
+# Target device. Change here if the project moves to another MCU.
+DEVICE="MSPM0G3519"
 
-# 检查文件是否存在
-if [ ! -f "$ELF_FILE" ]; then
-    echo "Error: ELF file not found at $ELF_FILE"
-    
-    # 尝试查找 build 目录下的 .elf 文件
-    # 使用 shopt 允许空结果不报错，或者使用 ls 配合 grep
-    FOUND_ELF=$(find build/ -name "*.elf" -type f 2>/dev/null | head -n 1)
-    
-    if [ -n "$FOUND_ELF" ]; then
-        echo "Looking for available ELF files in build directory..."
-        echo "Found: $FOUND_ELF"
-        ELF_FILE="$FOUND_ELF"
-        echo "Using: $ELF_FILE"
-    else
-        echo "Error: No ELF files found in build directory!"
-        exit 1
-    fi
+# objcopy: PATH by default, ARM_GCC_BIN override.
+OBJCOPY="arm-none-eabi-objcopy"
+if [ -n "${ARM_GCC_BIN:-}" ] && [ -x "$ARM_GCC_BIN/arm-none-eabi-objcopy" ]; then
+    OBJCOPY="$ARM_GCC_BIN/arm-none-eabi-objcopy"
 fi
 
-echo "Project Name: $PROJECT_NAME"
-echo "ELF File: $ELF_FILE"
+# ---------- Ensure the HEX exists ----------
+if [ ! -f "$HEX_FILE" ]; then
+    if [ ! -f "$ELF_FILE" ]; then
+        echo "[ERROR] Neither HEX nor ELF found in $BUILD_DIR. Build first."
+        exit 1
+    fi
+    if ! command -v "$OBJCOPY" >/dev/null 2>&1; then
+        echo "[ERROR] arm-none-eabi-objcopy not found in PATH."
+        echo "        Add the toolchain to PATH or set ARM_GCC_BIN."
+        exit 1
+    fi
+    echo "[INFO] HEX not found. Generating from ELF..."
+    "$OBJCOPY" -O ihex \
+        --remove-section=.TrimTable \
+        --remove-section=.vtable \
+        --remove-section=.bss \
+        "$ELF_FILE" "$HEX_FILE"
+fi
 
-# 创建临时 J-Link 脚本
-TEMP_SCRIPT="temp_jlink_script.jlink"
+echo "Project : $PROJECT_NAME"
+echo "HEX     : $HEX_FILE"
 
-# 写入 J-Link 命令
-# 注意：Linux 下路径分隔符是 /
+# ---------- J-Link ----------
+if [ -n "${JLINK_HOME:-}" ] && [ -x "$JLINK_HOME/JLinkExe" ]; then
+    JLINK_EXE="$JLINK_HOME/JLinkExe"
+elif command -v JLinkExe >/dev/null 2>&1; then
+    JLINK_EXE=JLinkExe
+elif command -v JLink >/dev/null 2>&1; then
+    JLINK_EXE=JLink
+else
+    echo "[ERROR] JLinkExe/JLink not found in PATH."
+    echo "        Install SEGGER J-Link software or set JLINK_HOME."
+    exit 1
+fi
+
+TEMP_SCRIPT="$BUILD_DIR/jlink_flash.jlink"
+trap 'rm -f "$TEMP_SCRIPT"' EXIT
+
 cat > "$TEMP_SCRIPT" <<EOF
-device MSPM0G3519
+device $DEVICE
 if SWD
 speed 4000
 halt
-loadfile $ELF_FILE
+loadfile $HEX_FILE
 r
 go
 exit
 EOF
 
-# 执行 J-Link
-# Linux 下使用 JLinkExe，Windows 下使用 JLink
-if command -v JLinkExe &> /dev/null; then
-    JLinkExe -CommanderScript "$TEMP_SCRIPT"
-elif command -v JLink &> /dev/null; then
-    JLink -CommanderScript "$TEMP_SCRIPT"
-else
-    echo "Error: JLinkExe/JLink command not found. Please ensure SEGGER J-Link software is installed and in PATH."
-    # 清理临时文件
-    rm -f "$TEMP_SCRIPT"
-    exit 1
+"$JLINK_EXE" -ExitOnError 1 -CommanderScript "$TEMP_SCRIPT"
+RC=$?
+
+if [ "$RC" -ne 0 ]; then
+    echo "[ERROR] J-Link failed with exit code $RC"
+    exit "$RC"
 fi
 
-# 清理临时文件
-rm -f "$TEMP_SCRIPT"
+echo "[OK] Flash completed."

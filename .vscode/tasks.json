@@ -5,6 +5,9 @@
       "label": "OpenOCD_flash_win",
       "type": "process",
       "command": "Flash\\OpenOCD_flash.bat",
+      "args": [
+        "--no-pause"
+      ],
       "group": "build",
       "problemMatcher": []
     },
@@ -12,6 +15,9 @@
       "label": "JLink_flash_win",
       "type": "process",
       "command": "Flash\\JLink_flash.bat",
+      "args": [
+        "--no-pause"
+      ],
       "group": "build",
       "problemMatcher": []
     },

@@ -35,6 +35,27 @@
         "enabled": true,
         "samplesPerSecond": 20,
       },
+    },
+    {
+      // attach：只连接芯片 + 加载符号，不执行 load，因此 F5 不会烧录
+      // 前提：芯片里已有用 Flash/JLink_flash.bat 烧进去的、与当前 ELF 匹配的固件
+      "cwd": "${workspaceRoot}",
+      "type": "cortex-debug",
+      "request": "attach",
+      "name": "jlink-attach (只调试不烧录)",
+      "servertype": "jlink",
+      "interface": "swd",
+      "serverpath": "D:\\Toolchain\\Jlink\\JLink_V958\\JLinkGDBServerCL.exe",
+      "executable": "build/${workspaceFolderBasename}.elf",
+      "device": "MSPM0G3519",
+      "svdFile": "Flash/MSPM0G351X.svd",
+      "postAttachCommands": [
+        "monitor halt"
+      ],
+      "liveWatch": {
+        "enabled": true,
+        "samplesPerSecond": 20,
+      },
     }
   ]
 }

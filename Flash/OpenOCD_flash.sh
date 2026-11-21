@@ -1,19 +1,55 @@
 #!/bin/bash
+set -u
 
-# 获取当前脚本所在目录的父目录名称（项目名称）
+# ============================================================
+#  OpenOCD flash script (Linux, CMSIS-DAP)
+#
+#  Prefer <project>.hex (LMA-based, no SRAM sections).
+#  OpenOCD handles ELF LMA correctly, so ELF is a safe fallback.
+#
+#  OpenOCD is resolved from PATH by default. Optional override:
+#    export OPENOCD_HOME=/opt/openocd/bin
+# ============================================================
+
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
+PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 PROJECT_NAME="$(basename "$PROJECT_DIR")"
 
-# 构建 ELF 文件路径（Linux原生使用正斜杠，无需转换）
-ELF_FILE="build/${PROJECT_NAME}.elf"
+BUILD_DIR="$PROJECT_DIR/build"
+HEX_FILE="$BUILD_DIR/$PROJECT_NAME.hex"
+ELF_FILE="$BUILD_DIR/$PROJECT_NAME.elf"
 
-# 检查文件是否存在
-if [ ! -f "$ELF_FILE" ]; then
-    echo "Error: ELF file not found at $ELF_FILE"
+if [ -f "$HEX_FILE" ]; then
+    TARGET_FILE="$HEX_FILE"
+elif [ -f "$ELF_FILE" ]; then
+    echo "[WARN] HEX not found. Using ELF instead: $ELF_FILE"
+    TARGET_FILE="$ELF_FILE"
+else
+    echo "[ERROR] Neither HEX nor ELF found in $BUILD_DIR. Build first."
     exit 1
 fi
 
-# 使用标准化路径烧录
-# 注意：确保 openocd 在 PATH 中，或者使用绝对路径
-openocd -f Flash/daplink.cfg -c "program \"${ELF_FILE}\" verify reset exit"
+# ---------- OpenOCD ----------
+OPENOCD="openocd"
+if [ -n "${OPENOCD_HOME:-}" ] && [ -x "$OPENOCD_HOME/openocd" ]; then
+    OPENOCD="$OPENOCD_HOME/openocd"
+fi
+if ! command -v "$OPENOCD" >/dev/null 2>&1; then
+    echo "[ERROR] openocd not found in PATH."
+    echo "        Add OpenOCD to PATH or set OPENOCD_HOME."
+    exit 1
+fi
+
+echo "Project : $PROJECT_NAME"
+echo "Target  : $TARGET_FILE"
+
+"$OPENOCD" -f "$SCRIPT_DIR/daplink.cfg" \
+    -c "program \"$TARGET_FILE\" verify reset exit"
+RC=$?
+
+if [ "$RC" -ne 0 ]; then
+    echo "[ERROR] OpenOCD failed with exit code $RC"
+    exit "$RC"
+fi
+
+echo "[OK] Flash completed."

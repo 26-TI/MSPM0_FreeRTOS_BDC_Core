@@ -59,11 +59,11 @@ void init_task(void *arg)
 
   /* 不重要但需要定期运行 */
   // xTaskCreate(motor_print_task, "motor_prt", 0x100, NULL, 5, NULL);
-  // xTaskCreate(gpio_task, "gpio", 0x100, NULL, 4, NULL);
+  xTaskCreate(gpio_task, "gpio", 0x100, NULL, 4, NULL);
   // xTaskCreate(gyro_task, "gyro", 0x100, NULL, 4, NULL);
   // xTaskCreate(menu_task, "menu", 0x200, NULL, 3, NULL);
   // xTaskCreate(cpu_monitor_task, "cpu_mon", 0x100, NULL, 2, NULL);
-  xTaskCreate(stepper_test_task, "step_tst", 0x400, NULL, 5, NULL);
+  // xTaskCreate(stepper_test_task, "step_tst", 0x400, NULL, 5, NULL);
 
 
   /* 消费菜单事件, 打印管理 */
@@ -79,6 +79,10 @@ void init_task(void *arg)
 
 int main(void)
 {
+  /* 防御性初始化 trim 缓存：调试口写 SRAM 不更新奇偶校验码，
+   * 否则 SYSCFG_DL_init() 首次读取 DATA_SET 会触发 SRAMDED NMI。 */
+  DL_FactoryRegion_initTrimTable();
+
   /* -------- 硬件初始化（★必须在调度器启动前完成） -------- */
   SYSCFG_DL_init(); /* SysConfig 自动生成: 时钟 / GPIO / 外设 */
   bsp_init();       /* 驱动层绑定 + NVIC 使能（内部调用 xStreamBufferCreate 等 FreeRTOS API） */

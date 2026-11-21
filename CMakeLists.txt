@@ -37,3 +37,29 @@ include_directories(
     ./User/Protocol
     ./User/Module
 )
+
+# 生成按 LMA（绝对地址）编址的 Intel HEX，供烧录工具使用。
+# 原因：直接烧 ELF 时 J-Link 按 VMA 加载，.data 的初始化数据会被写进 RAM 而不是
+# Flash 的 LMA，复位后 Reset_Handler 从 Flash 拷贝到 .data 的全是 0xFF。
+# HEX 使用 LMA；同时排除位于 SRAM 的 .TrimTable/.vtable/.bss，避免调试器写 SRAM
+# 时绕过奇偶校验码导致 SRAMDED NMI。
+# objcopy 优先取编译器同目录下的版本，找不到时再退回 PATH。
+get_filename_component(_TOOLCHAIN_BIN "${CMAKE_C_COMPILER}" DIRECTORY)
+find_program(_OBJCOPY_AUTO NAMES arm-none-eabi-objcopy
+    HINTS "${_TOOLCHAIN_BIN}" NO_DEFAULT_PATH NO_CACHE)
+if (_OBJCOPY_AUTO)
+    set(_OBJCOPY "${_OBJCOPY_AUTO}")
+else ()
+    set(_OBJCOPY "${CMAKE_OBJCOPY}")
+endif ()
+
+add_custom_command(TARGET ${CMAKE_PROJECT_NAME}.elf POST_BUILD
+    COMMAND ${_OBJCOPY} -O ihex
+            --remove-section=.TrimTable
+            --remove-section=.vtable
+            --remove-section=.bss
+            $<TARGET_FILE:${CMAKE_PROJECT_NAME}.elf>
+            ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_PROJECT_NAME}.hex
+    COMMENT "Generating ${CMAKE_PROJECT_NAME}.hex (LMA-based, flash only)"
+    VERBATIM
+)

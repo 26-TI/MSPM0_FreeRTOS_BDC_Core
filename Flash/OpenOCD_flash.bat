@@ -1,23 +1,69 @@
 @echo off
-REM 获取当前脚本所在目录的父目录名称（项目名称）
-for %%i in ("%~dp0\..") do set "PROJECT_NAME=%%~nxi"
+setlocal enabledelayedexpansion
 
-REM 构建 ELF 文件路径（使用正斜杠避免 OpenOCD 路径问题）
-set "ELF_FILE=build/%PROJECT_NAME%.elf"
-set "ELF_FILE=%ELF_FILE:\=/%"
+REM ============================================================
+REM  OpenOCD flash script (Windows, CMSIS-DAP)
+REM
+REM  Prefer <project>.hex (LMA-based, no SRAM sections).
+REM  OpenOCD handles ELF LMA correctly, so ELF is a safe fallback.
+REM
+REM  OpenOCD is resolved from PATH by default. Optional override:
+REM    set OPENOCD_HOME=C:\path\to\openocd\bin
+REM ============================================================
 
-REM 检查文件是否存在
-if not exist "%ELF_FILE%" (
-    echo Error: ELF file not found at %ELF_FILE%
-    exit /b 1
+for %%i in ("%~dp0..") do (
+    set "PROJECT_DIR=%%~fi"
+    set "PROJECT_NAME=%%~nxi"
+)
+set "BUILD_DIR=!PROJECT_DIR!\build"
+set "HEX_FILE=!BUILD_DIR!\!PROJECT_NAME!.hex"
+set "ELF_FILE=!BUILD_DIR!\!PROJECT_NAME!.elf"
+
+set "TARGET_FILE="
+if exist "!HEX_FILE!" (
+    set "TARGET_FILE=!HEX_FILE!"
+) else if exist "!ELF_FILE!" (
+    echo [WARN] HEX not found. Using ELF instead: !ELF_FILE!
+    set "TARGET_FILE=!ELF_FILE!"
 )
 
-REM OpenOCD 路径
-set "OPENOCD_PATH=D:\Toolchain\OpenOCD-20260302\bin\openocd.exe"
+if "!TARGET_FILE!"=="" (
+    echo [ERROR] Neither HEX nor ELF found in "!BUILD_DIR!". Build first.
+    goto :fail
+)
 
-REM DAPLink 配置文件路径
+REM OpenOCD prefers forward slashes.
+set "TARGET_OCD=!TARGET_FILE:\=/!"
 set "DAPLINK_CFG=%~dp0daplink.cfg"
+set "DAPLINK_CFG=!DAPLINK_CFG:\=/!"
 
-REM 烧录
-"%OPENOCD_PATH%" -f "%DAPLINK_CFG%" -c "program \"%ELF_FILE%\" verify reset exit"
-pause
+REM ---------- OpenOCD ----------
+set "OPENOCD=openocd"
+if defined OPENOCD_HOME if exist "!OPENOCD_HOME!\openocd.exe" set "OPENOCD=!OPENOCD_HOME!\openocd.exe"
+if /i "!OPENOCD!"=="openocd" (
+    where openocd >nul 2>nul
+    if errorlevel 1 (
+        echo [ERROR] openocd not found in PATH.
+        echo         Add OpenOCD to PATH or set OPENOCD_HOME.
+        goto :fail
+    )
+)
+
+echo Project : !PROJECT_NAME!
+echo Target  : !TARGET_FILE!
+
+"!OPENOCD!" -f "!DAPLINK_CFG!" -c "program \"!TARGET_OCD!\" verify reset exit"
+set "RC=!ERRORLEVEL!"
+
+if not "!RC!"=="0" (
+    echo [ERROR] OpenOCD failed with exit code !RC!
+    goto :fail
+)
+
+echo [OK] Flash completed.
+if /i not "%~1"=="--no-pause" pause
+exit /b 0
+
+:fail
+if /i not "%~1"=="--no-pause" pause
+exit /b 1
